@@ -3,6 +3,6 @@ import Image from 'next/image'
 
 export default function UserManagementIcon() {
   return (
-    <Image src="/images/user-multiple.png" width={20} height={20} />
+    <Image src="/images/user-multiple.png" width={20} height={20} alt=''/>
   )
 }

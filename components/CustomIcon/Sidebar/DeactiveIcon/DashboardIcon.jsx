@@ -6,7 +6,8 @@ export default function DashboardIcon() {
     <Image
           src="/images/dashboard.png"
           width={20}
-          height={20}
+      height={20}
+      alt=''
         />
   )
 }

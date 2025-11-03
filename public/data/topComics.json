@@ -1,0 +1,36 @@
+{
+  "comics": [
+    {
+      "id": 1,
+      "title": "Galactic Saga: Vol 1",
+      "author": "A. Clark",
+      "episodes": 1,
+      "downloads": 4500,
+      "status": "Published"
+    },
+    {
+      "id": 2,
+      "title": "Galactic Saga: Vol 1",
+      "author": "A. Clark",
+      "episodes": 2,
+      "downloads": 4500,
+      "status": "Draft"
+    },
+    {
+      "id": 3,
+      "title": "Galactic Saga: Vol 1",
+      "author": "A. Clark",
+      "episodes": 5,
+      "downloads": 4500,
+      "status": "Published"
+    },
+    {
+      "id": 4,
+      "title": "Galactic Saga: Vol 1",
+      "author": "A. Clark",
+      "episodes": 12,
+      "downloads": 4500,
+      "status": "Archived"
+    }
+  ]
+}

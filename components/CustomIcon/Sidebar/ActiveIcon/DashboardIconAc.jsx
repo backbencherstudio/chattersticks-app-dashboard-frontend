@@ -7,6 +7,7 @@ export default function DashboardIconAc() {
       src="/images/dashboard.png"
       width={20}
       height={20}
+      alt=''
     />
   )
 }
