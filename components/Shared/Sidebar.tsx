@@ -4,12 +4,14 @@ import { useRouter } from 'next/navigation';
 import { IoMdClose } from 'react-icons/io';
 import { FiLogOut } from 'react-icons/fi';
 import SideBarMenu from '../Sidebar/SidebarMenu';
-
-
 import Image from 'next/image';
 import { Settings } from 'lucide-react';
+
+import { useSettingsModal } from '@/context/SettingsModalContext';
+
 export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
   const router = useRouter();
+  const { openSettingsModal, setSettingsModalOpen } = useSettingsModal();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const toggleCollapse = () => {
@@ -21,8 +23,12 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
 
     router.push('/login');
   };
+  const handleSettings = () => {
+    setIsLoading(true);
+    openSettingsModal();
+    router.push('/settings');
+  };
 
- 
 
   return (
     <>
@@ -61,8 +67,6 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
             </div>
           </div>
 
-          
-
           {/* Close button for mobile */}
           <button
             className={`p-1 absolute right-0 top-2 cursor-pointer  rounded-sm rounded-r-none bg-gray-100 hover:bg-gray-200 transition-all duration-300  md:hidden  ${
@@ -82,12 +86,12 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
           />
         </div>
 
-        {/* Bottom Navigation - Logout - Fixed */}
+        {/* Bottom Navigation */}
         <nav className={`p-1  ${isCollapsed ? 'px-2' : ''} flex-shrink-0`}>
           <div className="pt-2">
             <button
               onClick={() => {
-                handleLogout();
+                handleSettings();
                 if (window.innerWidth < 768) {
                   onMobileMenuClose();
                 }
@@ -96,6 +100,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
                 isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'
               } p-3 rounded-lg text-[#4A4C56] hover:bg-gray-100`}
               title={isCollapsed ? 'Logout' : ''}
+             
             >
               <Settings className="w-5 h-5 shrink-0 text-gray-500" />
               <span

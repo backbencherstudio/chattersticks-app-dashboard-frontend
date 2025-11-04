@@ -13,7 +13,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 type Comic = {
   id: number;
-  name: string;
+  title: string;
   author: string;
   downloads: number;
 };
@@ -84,7 +84,7 @@ export default function TopComicsCard() {
                   key={comic.id}
                   className="bg-blue-50/30 hover:bg-blue-100/40"
                 >
-                  <TableCell className="font-medium">{comic.name}</TableCell>
+                  <TableCell className="font-medium">{comic.title}</TableCell>
                   <TableCell className="text-gray-700">
                     by {comic.author}
                   </TableCell>

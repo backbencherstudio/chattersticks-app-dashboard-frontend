@@ -2,34 +2,34 @@
   "comics": [
     {
       "id": 1,
-      "title": "Galactic Saga: Vol 1",
+      "title": "Nalactic Saga: Vol 1",
       "author": "A. Clark",
       "episodes": 1,
-      "downloads": 4500,
+      "downloads": 2500,
       "status": "Published"
     },
     {
       "id": 2,
-      "title": "Galactic Saga: Vol 1",
-      "author": "A. Clark",
+      "title": "Balactic Saga: Vol 1",
+      "author": "B. Clark",
       "episodes": 2,
-      "downloads": 4500,
+      "downloads": 3500,
       "status": "Draft"
     },
     {
       "id": 3,
-      "title": "Galactic Saga: Vol 1",
-      "author": "A. Clark",
+      "title": "Salactic Saga: Vol 1",
+      "author": "V. Clark",
       "episodes": 5,
-      "downloads": 4500,
+      "downloads": 6500,
       "status": "Published"
     },
     {
       "id": 4,
-      "title": "Galactic Saga: Vol 1",
-      "author": "A. Clark",
+      "title": "Calactic Saga: Vol 2",
+      "author": "G. Clark",
       "episodes": 12,
-      "downloads": 4500,
+      "downloads": 5500,
       "status": "Archived"
     }
   ]

@@ -120,3 +120,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+.bg-soft-gradient {
+  background: radial-gradient(circle at top left, #dbeafe, transparent 50%),
+              radial-gradient(circle at bottom right, #fef3c7, transparent 50%),
+              radial-gradient(circle at bottom left, #fce7f3, transparent 50%);
+}

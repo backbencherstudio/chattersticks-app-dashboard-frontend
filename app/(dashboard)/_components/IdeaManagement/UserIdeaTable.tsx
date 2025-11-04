@@ -3,49 +3,30 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { Eye } from 'lucide-react';
-import { UserModal } from './UserModal';
+import { UsersIdeaModal } from './UsersIdeaModal';
+import ReactMarkdown from 'react-markdown';
 
 interface User {
   username: string;
   photo: string;
   email: string;
-  joinedDate: string;
-  lastActive: string;
+  ideas: string;
+  userId: number;
 }
 
-type SortOrder = 'asc' | 'desc' | null;
 
-export default function UserTable() {
+
+export default function UsersIdeaTable() {
   const [users, setUsers] = useState<User[]>([]);
-  const [sortOrder, setSortOrder] = useState<SortOrder>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    fetch('/data/users.json')
+    fetch('/data/usersIdea.json')
       .then(res => res.json())
-      .then((data: User[]) => {
-        const sorted = data.sort(
-          (a, b) =>
-            new Date(a.joinedDate).getTime() - new Date(b.joinedDate).getTime()
-        );
-        setUsers(sorted);
-      });
+      .then((data: User[]) => setUsers(data))
+      .catch(error => console.error('Error loading users:', error));
   }, []);
-
-
-  function handleSort() {
-    let newOrder: SortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    setSortOrder(newOrder);
-
-    const sorted = [...users].sort((a, b) =>
-      newOrder === 'asc'
-        ? new Date(a.joinedDate).getTime() - new Date(b.joinedDate).getTime()
-        : new Date(b.joinedDate).getTime() - new Date(a.joinedDate).getTime()
-    );
-
-    setUsers(sorted);
-  }
 
   // ✅ Open modal with selected user
   function handleView(user: User) {
@@ -61,17 +42,11 @@ export default function UserTable() {
           <h2 className="pl-5 py-2 font-bold">All User</h2>
           <table className="w-full text-left text-sm min-w-[800px]">
             <thead className="bg-gray-100 text-gray-700 border-b">
-              <tr
-                onClick={handleSort}
-                className="bg-gray-200/50 cursor-pointer select-none"
-              >
-                <th className="py-3 px-4">
-                  Username <SortIndicator order={sortOrder} />
-                </th>
+              <tr className="bg-gray-200/50 cursor-pointer select-none">
+                <th className="py-3 px-4">Username</th>
                 <th className="py-3 px-4">Photos</th>
                 <th className="py-3 px-4">Email</th>
-                <th className="py-3 px-4">Joined Date</th>
-                <th className="py-3 px-4">Last Active</th>
+                <th className="py-3 px-4">User Ideas</th>
                 <th className="py-3 px-4 text-center">Action</th>
               </tr>
             </thead>
@@ -89,8 +64,16 @@ export default function UserTable() {
                     />
                   </td>
                   <td className="py-3 px-4">{user.email}</td>
-                  <td className="py-3 px-4">{user.joinedDate}</td>
-                  <td className="py-3 px-4">{user.lastActive}</td>
+                  <td className="py-3 px-4">
+                    <div className="max-w-md">
+                      <ReactMarkdown>
+                        {user.ideas.length > 60
+                          ? user.ideas.substring(0, 60) + '...'
+                          : user.ideas}
+                      </ReactMarkdown>
+                    </div>
+                  </td>
+
                   <td className="py-3 px-4 text-center">
                     <button
                       className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-md cursor-pointer"
@@ -107,7 +90,7 @@ export default function UserTable() {
       </Card>
 
       {/* ✅ Reusable Modal Component */}
-      <UserModal
+      <UsersIdeaModal
         open={open}
         onClose={() => setOpen(false)}
         user={selectedUser}
@@ -116,9 +99,4 @@ export default function UserTable() {
   );
 }
 
-// Sort indicator component
-const SortIndicator: React.FC<{ order: SortOrder }> = ({ order }) => {
-  if (order === 'asc') return <span className="ml-2">▲</span>;
-  if (order === 'desc') return <span className="ml-2">▼</span>;
-  return null;
-};
+
