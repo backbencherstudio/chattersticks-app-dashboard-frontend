@@ -5,6 +5,7 @@ import ReduxProvider from '@/providers/ReduxProvider';
 
 import PrivateRoute from '@/routes/PrivateRoute';
 import { SettingsModalProvider } from '@/context/SettingsModalContext';
+import { Toaster } from 'sonner';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -35,7 +36,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${inter.variable} ${geistMono.variable} antialiased`}
       >
-        <SettingsModalProvider>{children}</SettingsModalProvider>
+        <SettingsModalProvider>
+          {children}
+          <Toaster richColors position="top-center" />
+        </SettingsModalProvider>
       </body>
     </html>
   );
