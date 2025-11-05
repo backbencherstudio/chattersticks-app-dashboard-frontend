@@ -55,7 +55,7 @@ export const UserModal: React.FC<UserModalProps> = ({
           </DialogClose>
         </DialogHeader>
 
-        <div className="space-y-3 text-[10px] md:text-sm text-gray-700">
+        <div className="space-y-3 text-[11px] md:text-sm text-gray-700">
           <div className="flex justify-between border-b-2 py-1">
             <div className="flex flex-col gap-2">
               <span className="font-medium flex items-center gap-2">

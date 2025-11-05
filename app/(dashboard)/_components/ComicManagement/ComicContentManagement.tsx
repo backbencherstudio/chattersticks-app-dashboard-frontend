@@ -83,7 +83,7 @@ export default function ComicContentManagement() {
             />
             <Button
               onClick={() => setOpenModal(true)}
-              className="bg-green-600 whitespace-nowrap"
+              className="bg-green-600 hover:bg-green-600 cursor-pointer whitespace-nowrap"
             >
               Add New Comic
             </Button>
@@ -161,7 +161,7 @@ export default function ComicContentManagement() {
                         size="icon"
                         variant="outline"
                         className="cursor-pointer"
-                        onClick={() => handleDelete(comic.id)} 
+                        onClick={() => handleDelete(comic.id)}
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </Button>
@@ -216,10 +216,18 @@ export default function ComicContentManagement() {
                   <Button size="sm" variant="outline">
                     <Eye className="w-3 h-3 text-green-600 " />
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setOpenModal(true)}
+                  >
                     <Pencil className="w-3 h-3 text-yellow-600 mr-1" />
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleDelete(comic.id)}
+                  >
                     <Trash2 className="w-3 h-3 text-red-600 mr-1" />
                   </Button>
                 </div>

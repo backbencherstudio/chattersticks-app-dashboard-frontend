@@ -4,8 +4,14 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft } from 'lucide-react';
-import { toast } from 'sonner'; 
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 
 // ✅ OTP Input Boxes
 const OtpInput = () => {
@@ -22,34 +28,35 @@ const OtpInput = () => {
   );
 };
 
-export const LoginForm = () => {
+export default function LoginForm() {
   const [showForgot, setShowForgot] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [showReset, setShowReset] = useState(false);
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const handleChangePassword = () => {
-    toast.success('Password updated successfully 🔒', {
-      description: 'You can now log in with your new password.',
-      duration: 3000,
-    });
+    setShowSuccessModal(true);
+  };
+
+  const handleBackToLogin = () => {
+    setShowSuccessModal(false);
     setShowReset(false);
     setShowForgot(false);
     setShowOtp(false);
   };
 
   return (
-    <>
+    <div className="md:min-h-screen flex items-center justify-center">
       {/* ✅ Login Screen */}
       {!showForgot && !showOtp && !showReset && (
-        <Card className="w-[350px] shadow-xl rounded-2xl">
+        <Card className="md:w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-center text-xl font-semibold">
-              Welcome 👋
-            </CardTitle>
+            <CardTitle className=" text-2xl font-bold">Welcome 👋</CardTitle>
+            <small className="text-[#A2A1A8]">Please Login here</small>
           </CardHeader>
 
           <CardContent>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <label className="text-sm font-medium">Email address</label>
                 <Input
@@ -61,11 +68,23 @@ export const LoginForm = () => {
 
               <div>
                 <label className="text-sm font-medium">Password</label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  className="mt-1"
-                />
+                <div className="relative mt-1">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between text-sm">
@@ -83,10 +102,8 @@ export const LoginForm = () => {
                 </button>
               </div>
 
-              <Button type="submit" className="w-full mt-2 bg-blue-500">
-                Login
-              </Button>
-            </form>
+              <Button className="w-full mt-2 bg-blue-500">Login</Button>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -110,13 +127,13 @@ export const LoginForm = () => {
               Forgot Password
             </CardTitle>
             <p className="text-sm text-gray-500">
-              Enter your registered email address. We’ll send you a code to
+              Enter your registered email address. We will send you a code to
               reset your password.
             </p>
           </CardHeader>
 
           <CardContent>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <label className="text-sm font-medium">Email Address</label>
                 <Input
@@ -127,13 +144,12 @@ export const LoginForm = () => {
               </div>
 
               <Button
-                type="button"
                 onClick={() => setShowOtp(true)}
                 className="w-full bg-blue-500"
               >
                 Send OTP
               </Button>
-            </form>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -156,17 +172,16 @@ export const LoginForm = () => {
           </CardHeader>
 
           <CardContent>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <OtpInput />
 
               <Button
-                type="button"
                 onClick={() => setShowReset(true)}
                 className="w-full bg-blue-500"
               >
                 Verify
               </Button>
-            </form>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -177,7 +192,7 @@ export const LoginForm = () => {
           <CardHeader>
             <button
               className="flex items-center gap-1 text-sm text-gray-500 mb-1"
-              onClick={() => setShowOtp(true)}
+              onClick={() => setShowReset(false)}
             >
               <ArrowLeft className="h-4 w-4" /> back
             </button>
@@ -188,7 +203,7 @@ export const LoginForm = () => {
           </CardHeader>
 
           <CardContent>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <label className="text-sm font-medium">New Password</label>
                 <Input
@@ -208,16 +223,36 @@ export const LoginForm = () => {
               </div>
 
               <Button
-                type="button"
                 onClick={handleChangePassword}
                 className="w-full bg-blue-500"
               >
                 Change Password
               </Button>
-            </form>
+            </div>
           </CardContent>
         </Card>
       )}
-    </>
+
+      {/* ✅ Success Modal */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto mb-4 text-6xl">🎉</div>
+            <DialogTitle className="text-center text-xl font-semibold">
+              Password Update Successfully
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-500">
+              Your password has been update successfully
+            </DialogDescription>
+          </DialogHeader>
+          <Button
+            onClick={handleBackToLogin}
+            className="w-full bg-blue-500 hover:bg-blue-600"
+          >
+            Back to login
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
-};
+}

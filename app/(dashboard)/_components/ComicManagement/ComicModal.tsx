@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { X } from 'lucide-react';
+import { CardSmallScreen } from '@/components/Shared/CardSmallScreen';
 
 interface ModalProps {
   onClose: () => void;
@@ -15,6 +16,15 @@ interface Episode {
   title: string;
   thumbnail: File | null;
   images: File[];
+}
+
+interface Comic {
+  id: number;
+  title: string;
+  author: string;
+  episodes: number;
+  downloads: number;
+  status: string;
 }
 
 export default function AddComicModal({ onClose }: ModalProps) {
@@ -28,14 +38,17 @@ export default function AddComicModal({ onClose }: ModalProps) {
     { id: 1, title: '', thumbnail: null, images: [] },
   ]);
 
+  const [submitText, setSubmitText] = useState('Create Comic Series');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Fetch statuses from JSON
   useEffect(() => {
     const fetchStatuses = async () => {
       try {
         const res = await fetch('/data/topComics.json');
-        const data = await res.json();
+        const data: { comics: Comic[] } = await res.json();
         const uniqueStatuses = [
-          ...new Set(data.comics.map((comic: any) => comic.status)),
+          ...new Set(data.comics.map(comic => comic.status)),
         ];
         setStatuses(uniqueStatuses);
       } catch (error) {
@@ -77,12 +90,38 @@ export default function AddComicModal({ onClose }: ModalProps) {
     setThumbnail(file);
   };
 
+  // Handle submit
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmitText('Updated Comic Series');
+
+    try {
+      const payload = {
+        title: comicTitle,
+        author: authorCreator,
+        status,
+        description,
+        episodes,
+        thumbnail,
+      };
+
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      console.log('Comic submitted:', payload);
+    } catch (error) {
+      console.error('Error submitting comic:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-      <Card className="w-full max-w-5xl bg-white relative max-h-[90vh] overflow-y-auto rounded-lg">
+      <CardSmallScreen className="w-full max-w-5xl relative max-h-[90vh] overflow-y-auto rounded-lg">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <h3 className="text-base sm:text-lg font-semibold">
+        <div className="sticky top-0 bg-white border-b px-4 sm:px-6 py-6 sm:py-6 flex items-center justify-between ">
+          <h3 className="text-base sm:text-lg font-semibold ">
             User Profile: comic_fan_78
           </h3>
           <button
@@ -283,11 +322,15 @@ export default function AddComicModal({ onClose }: ModalProps) {
           >
             Cancel
           </Button>
-          <Button className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto px-6">
-            Create Comic Series
+          <Button
+            className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto px-6"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {submitText}
           </Button>
         </div>
-      </Card>
+      </CardSmallScreen>
     </div>
   );
 }

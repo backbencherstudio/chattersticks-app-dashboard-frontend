@@ -26,7 +26,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
   const handleSettings = () => {
     setIsLoading(true);
     openSettingsModal();
-    router.push('/settings');
+   
   };
 
 
@@ -100,17 +100,16 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
                 isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'
               } p-3 rounded-lg text-[#4A4C56] hover:bg-gray-100`}
               title={isCollapsed ? 'Logout' : ''}
-             
             >
               <Settings className="w-5 h-5 shrink-0 text-gray-500" />
               <span
-                className={`transition-all duration-300 ease-in-out ${
+                className={`${
                   isCollapsed
-                    ? 'opacity-0 max-w-0 ml-0'
+                    ? 'opacity-0 max-w-0'
                     : 'opacity-100 max-w-[160px] ml-2'
-                } overflow-hidden whitespace-nowrap align-middle inline-block`}
+                } overflow-hidden`}
               >
-                Seetings
+                Settings
               </span>
             </button>
           </div>
