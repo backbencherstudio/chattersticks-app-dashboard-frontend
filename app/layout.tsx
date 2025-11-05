@@ -28,10 +28,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${inter.variable} ${geistMono.variable} antialiased`}
       >
-        <SettingsModalProvider>
-          {children}
-          <ClientModalWrapper /> 
-        </SettingsModalProvider>
+        <ReduxProvider>
+          <SettingsModalProvider>
+            {children}
+            <ClientModalWrapper />
+          </SettingsModalProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

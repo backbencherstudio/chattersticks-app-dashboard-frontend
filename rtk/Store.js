@@ -1,5 +1,5 @@
 import baseApi from './features/baseApi';
-const { configureStore } = require('@reduxjs/toolkit');
+import { configureStore } from '@reduxjs/toolkit';
 
 
 const Store = configureStore({

@@ -19,13 +19,7 @@ const baseApi = createApi({
   baseQuery,
   tagTypes: [
     'user',
-    'booking',
-    'payment',
-    'reviews',
-    'notification',
-    'setting',
-    'dashboard',
-    'report',
+    
   ],
   endpoints: () => ({}),
 });
