@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Eye, Pencil,  Trash2 } from 'lucide-react';
-import AddComicModal from './ComicModal';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useGetAllComicsQuery } from "../../../../rtk/features/all-apis/comics/comicsApi";
+import AddComicModal from "./ComicModal";
 
 interface Comic {
   id: number;
@@ -15,23 +16,27 @@ interface Comic {
   downloads: number;
   status: string;
 }
-type SortOrder = 'asc' | 'desc' | null;
+type SortOrder = "asc" | "desc" | null;
 
 export default function ComicContentManagement() {
   const [comics, setComics] = useState<Comic[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const { data } = useGetAllComicsQuery("");
+
+  console.log(data);
 
   // ✅ Fetch data from local JSON file
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        const res = await fetch('/data/topComics.json');
+        const res = await fetch("/data/topComics.json");
         const data = await res.json();
         setComics(data.comics);
       } catch (error) {
-        console.error('Error loading comics:', error);
+        console.error("Error loading comics:", error);
       }
     };
 
@@ -39,21 +44,21 @@ export default function ComicContentManagement() {
   }, []);
 
   // ✅ Filter comics by title based on search term
-  const filteredComics = comics.filter(comic =>
+  const filteredComics = comics.filter((comic) =>
     comic.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   function handleSort() {
     let newOrder: SortOrder;
-    if (sortOrder === 'asc') {
-      newOrder = 'desc';
+    if (sortOrder === "asc") {
+      newOrder = "desc";
     } else {
-      newOrder = 'asc';
+      newOrder = "asc";
     }
     setSortOrder(newOrder);
 
     const sorted = [...comics].sort((a, b) => {
-      if (newOrder === 'asc') {
+      if (newOrder === "asc") {
         return a.downloads - b.downloads;
       } else {
         return b.downloads - a.downloads;
@@ -64,7 +69,7 @@ export default function ComicContentManagement() {
 
   // ✅ Delete comic by id
   const handleDelete = (id: number) => {
-    const updatedComics = comics.filter(comic => comic.id !== id);
+    const updatedComics = comics.filter((comic) => comic.id !== id);
     setComics(updatedComics);
   };
 
@@ -79,7 +84,7 @@ export default function ComicContentManagement() {
               placeholder="Search for comics..."
               className="w-full sm:w-64"
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Button
               onClick={() => setOpenModal(true)}
@@ -94,7 +99,7 @@ export default function ComicContentManagement() {
         {searchTerm && (
           <p className="text-sm text-gray-600 mb-2">
             Found {filteredComics.length} result
-            {filteredComics.length !== 1 ? 's' : ''}
+            {filteredComics.length !== 1 ? "s" : ""}
           </p>
         )}
 
@@ -115,7 +120,7 @@ export default function ComicContentManagement() {
             </thead>
             <tbody>
               {filteredComics.length > 0 ? (
-                filteredComics.map(comic => (
+                filteredComics.map((comic) => (
                   <tr
                     key={comic.id}
                     className="border-b hover:bg-gray-50 transition-colors"
@@ -131,11 +136,11 @@ export default function ComicContentManagement() {
                     <td className="p-2">
                       <span
                         className={`${
-                          comic.status === 'Published'
-                            ? 'text-green-600'
-                            : comic.status === 'Draft'
-                            ? 'text-yellow-500'
-                            : 'text-red-500'
+                          comic.status === "Published"
+                            ? "text-green-600"
+                            : comic.status === "Draft"
+                            ? "text-yellow-500"
+                            : "text-red-500"
                         }`}
                       >
                         {comic.status}
@@ -173,7 +178,7 @@ export default function ComicContentManagement() {
                   <td colSpan={5} className="text-center p-4 text-gray-500">
                     {searchTerm
                       ? `No comics found matching "${searchTerm}"`
-                      : 'Loading comics...'}
+                      : "Loading comics..."}
                   </td>
                 </tr>
               )}
@@ -184,7 +189,7 @@ export default function ComicContentManagement() {
         {/* Mobile Card View */}
         <div className="md:hidden space-y-3">
           {filteredComics.length > 0 ? (
-            filteredComics.map(comic => (
+            filteredComics.map((comic) => (
               <div
                 key={comic.id}
                 className="border rounded-lg p-3 bg-white hover:bg-gray-50 transition-colors"
@@ -198,11 +203,11 @@ export default function ComicContentManagement() {
                   </div>
                   <span
                     className={`text-xs px-2 py-1 rounded ${
-                      comic.status === 'Published'
-                        ? 'text-green-600 bg-green-50'
-                        : comic.status === 'Draft'
-                        ? 'text-yellow-600 bg-yellow-50'
-                        : 'text-red-600 bg-red-50'
+                      comic.status === "Published"
+                        ? "text-green-600 bg-green-50"
+                        : comic.status === "Draft"
+                        ? "text-yellow-600 bg-yellow-50"
+                        : "text-red-600 bg-red-50"
                     }`}
                   >
                     {comic.status}
@@ -237,7 +242,7 @@ export default function ComicContentManagement() {
             <div className="text-center p-8 text-gray-500 border rounded-lg">
               {searchTerm
                 ? `No comics found matching "${searchTerm}"`
-                : 'Loading comics...'}
+                : "Loading comics..."}
             </div>
           )}
         </div>
@@ -251,7 +256,7 @@ export default function ComicContentManagement() {
 
 // Sort indicator component
 const SortIndicator: React.FC<{ order: SortOrder }> = ({ order }) => {
-  if (order === 'asc') return <span className="ml-2">▲</span>;
-  if (order === 'desc') return <span className="ml-2">▼</span>;
+  if (order === "asc") return <span className="ml-2">▲</span>;
+  if (order === "desc") return <span className="ml-2">▼</span>;
   return null;
 };
