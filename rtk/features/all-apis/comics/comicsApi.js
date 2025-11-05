@@ -2,6 +2,14 @@ import baseApi from "../../baseApi";
 
 const ComicApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    CreateComic: builder.mutation({
+      query: (data) => ({
+        url: "/admin/comic",
+        method: "POST",
+        body:data
+      }),
+     
+    }),
     getAllComics: builder.query({
       query: (params) => ({
         url: "/admin/comic/dashboard",
@@ -13,6 +21,6 @@ const ComicApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllComicsQuery } = ComicApi;
+export const { useGetAllComicsQuery, useCreateComicMutation } = ComicApi;
 
 

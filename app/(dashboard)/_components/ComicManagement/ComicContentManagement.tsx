@@ -26,8 +26,6 @@ export default function ComicContentManagement() {
 
   const { data } = useGetAllComicsQuery("");
 
-  console.log(data);
-
   // ✅ Fetch data from local JSON file
   useEffect(() => {
     const fetchComics = async () => {

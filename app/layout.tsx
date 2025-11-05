@@ -4,6 +4,7 @@ import './globals.css';
 import ReduxProvider from '@/providers/ReduxProvider';
 import { SettingsModalProvider } from '@/context/SettingsModalContext';
 import ClientModalWrapper from '@/context/ClientModalWrapper';
+import PrivateRoute from '@/routes/PrivateRoute';
 
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -28,12 +29,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${inter.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>
-          <SettingsModalProvider>
-            {children}
-            <ClientModalWrapper />
-          </SettingsModalProvider>
-        </ReduxProvider>
+        <PrivateRoute>
+          <ReduxProvider>
+            <SettingsModalProvider>
+              {children}
+              <ClientModalWrapper />
+            </SettingsModalProvider>
+          </ReduxProvider>
+        </PrivateRoute>
       </body>
     </html>
   );
