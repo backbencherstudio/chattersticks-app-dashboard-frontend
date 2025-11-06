@@ -6,17 +6,17 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogOverlay,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Heart, Mail, Smartphone, User, X } from 'lucide-react';
-import { Loader2 } from 'lucide-react';
+import { Heart, Mail, Smartphone, User, Loader2 } from 'lucide-react';
 import { useGetUserByIdQuery } from '@/rtk/features/all-apis/user-management/userManagement';
 
 interface UserModalProps {
   open: boolean;
   onClose: () => void;
-  userId: string | null; // API returns id as string
+  userId: string | null;
 }
 
 export const UserModal: React.FC<UserModalProps> = ({
@@ -24,47 +24,30 @@ export const UserModal: React.FC<UserModalProps> = ({
   onClose,
   userId,
 }) => {
-  // Fetch user data from API
-  const { data, isLoading, isError } = useGetUserByIdQuery(
-    userId || '', // pass empty string if null to avoid undefined
-    { skip: !userId }
-  );
+  const { data, isLoading, isError } = useGetUserByIdQuery(userId || '', {
+    skip: !userId,
+  });
 
-  console.log(data)
-
-  // Unwrap user from API response
-  const user = data?.data;
-
-  // Format dates
+  const user = data?.data || [];
+  console.log(user._count);
   const formatDate = (dateStr?: string) =>
     dateStr ? new Date(dateStr).toLocaleDateString() : 'N/A';
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogOverlay className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
-      <DialogContent
-        showCloseButton={false}
-        className="bg-white rounded-xl shadow-lg w-full p-6 font-[inter]"
-      >
-        <DialogHeader className="flex relative border-b pb-2 mb-4">
+
+      <DialogContent className="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 font-[inter]">
+        <DialogHeader className="flex relative border-b pb-3 mb-4">
           <DialogTitle className="text-md font-bold">
             {isLoading
               ? 'Loading user...'
               : isError
               ? 'Error Loading User'
-              : `User Profile: ${user?.name || 'N/A'}`}
+              : `User Profile: `}
           </DialogTitle>
-          <DialogClose asChild>
-            <button
-              onClick={onClose}
-              className="hover:text-gray-600 absolute top-[-6] right-[-6] md:top-0 md:right-6"
-            >
-              <X size={18} />
-            </button>
-          </DialogClose>
         </DialogHeader>
 
-        {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center items-center py-10 text-gray-500">
             <Loader2 className="animate-spin mr-2" size={20} />
@@ -72,56 +55,59 @@ export const UserModal: React.FC<UserModalProps> = ({
           </div>
         )}
 
-        {/* Error State */}
         {isError && (
           <div className="text-center text-red-500 font-semibold py-6">
             Failed to load user data.
           </div>
         )}
 
-        {/* User Data */}
         {!isLoading && !isError && user && (
-          <div className="space-y-3 text-[11px] md:text-sm text-gray-700">
-            <div className="flex justify-between border-b-2 py-1">
-              <div className="flex flex-col gap-2">
+          <div className="space-y-3 text-[12px] md:text-sm text-gray-700">
+            {/* User ID + Email */}
+            <div className="flex justify-between border-b-2 py-2">
+              <div className="flex flex-col gap-1">
                 <span className="font-medium flex items-center gap-2">
-                  <User size={18} /> User ID
+                  <User size={16} /> User ID
                 </span>
-                <span className="font-bold ml-1">{user.id}</span>
+                <span className="font-bold ml-1">{user?.name}</span>
               </div>
-              <div className="flex flex-col gap-2 w-fit">
+
+              <div className="flex flex-col gap-1 w-fit">
                 <span className="font-medium flex items-center gap-2">
-                  <Mail size={18} /> Email
+                  <Mail size={16} /> Email
                 </span>
                 <span className="font-bold ml-1">{user.email || 'N/A'}</span>
               </div>
             </div>
 
-            <div className="flex justify-between mr-2 md:mr-5 border-b-2 py-1">
-              <div className="flex flex-col gap-2">
+            {/* Favorites + Device */}
+            <div className="flex justify-between mr-2 md:mr-5 border-b-2 py-2">
+              <div className="flex flex-col gap-1">
                 <span className="font-medium flex items-center gap-2">
-                  <Heart size={18} /> Favorite Comics
+                  <Heart size={16} /> Favorite Comics
                 </span>
                 <span className="font-bold ml-1">
                   {user._count?.favorite_comics ?? 0}
                 </span>
               </div>
-              <div className="flex flex-col gap-2">
-                <span className="font-medium flex items-center justify-start gap-2">
-                  <Smartphone size={18} /> Primary Device
+
+              <div className="flex flex-col gap-1">
+                <span className="font-medium flex items-center gap-2">
+                  <Smartphone size={16} /> Primary Device
                 </span>
-                <span className="font-bold">N/A</span>{' '}
-                {/* Not available in API */}
+                <span className="font-bold">N/A</span>
               </div>
             </div>
 
-            <div className="flex justify-between py-1">
-              <div className="flex flex-col gap-2">
-                <span>Joined Date</span>
+            {/* Joined + Last Activity */}
+            <div className="flex justify-between py-2">
+              <div className="flex flex-col gap-1">
+                <span className="font-medium">Joined Date</span>
                 <span className="font-bold">{formatDate(user.created_at)}</span>
               </div>
-              <div className="flex flex-col gap-2 mr-10 md:mr-15">
-                <span>Last Activity</span>
+
+              <div className="flex flex-col gap-1 mr-6">
+                <span className="font-medium">Last Activity</span>
                 <span className="font-bold">{formatDate(user.updated_at)}</span>
               </div>
             </div>
