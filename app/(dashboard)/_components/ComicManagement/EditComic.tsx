@@ -1,16 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { CardSmallScreen } from "@/components/Shared/CardSmallScreen";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateComicMutation } from "@/rtk/features/all-apis/comics/comicsApi";
+import {
+  useGetSingleComicQuery,
+  useUpdateComicMutation,
+} from "@/rtk/features/all-apis/comics/comicsApi";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface ModalProps {
   onClose: () => void;
+  comicId: string;
 }
 
 interface Episode {
@@ -20,7 +25,7 @@ interface Episode {
   images: File[];
 }
 
-export default function EditComic({ onClose }: ModalProps) {
+export default function EditComic({ onClose, comicId }: ModalProps) {
   const [comicTitle, setComicTitle] = useState("");
   const [authorCreator, setAuthorCreator] = useState("");
   const [status, setStatus] = useState("");
@@ -30,7 +35,29 @@ export default function EditComic({ onClose }: ModalProps) {
     { id: 1, title: "", thumbnail: null, images: [] },
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [CreateComic] = useCreateComicMutation();
+
+  const [updateComic] = useUpdateComicMutation();
+  const { data, refetch } = useGetSingleComicQuery(comicId);
+  const comic = data?.data;
+
+  useEffect(() => {
+    if (comic) {
+      setComicTitle(comic.title || "");
+      setAuthorCreator(comic.author || "");
+      setStatus(comic.status || "");
+      setDescription(comic.description || "");
+      if (comic.episodes && comic.episodes.length > 0) {
+        setEpisodes(
+          comic.episodes.map((ep: any, index: number) => ({
+            id: index + 1,
+            title: ep.title,
+            thumbnail: null,
+            images: [],
+          }))
+        );
+      }
+    }
+  }, [comic]);
 
   // Add new episode
   const addEpisode = () => {
@@ -96,10 +123,11 @@ export default function EditComic({ onClose }: ModalProps) {
         });
       });
 
-      const response = await CreateComic(formData);
+      const response = await updateComic({ id: comicId, data: formData });
 
       if (response?.data?.success) {
         toast.success(response?.data?.message);
+        refetch();
       }
 
       onClose();

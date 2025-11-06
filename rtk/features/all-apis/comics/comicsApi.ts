@@ -16,7 +16,13 @@ const ComicApi = baseApi.injectEndpoints({
         params: params,
       }),
     }),
-    updateComic: builder.query({
+    getSingleComic: builder.query({
+      query: (id) => ({
+        url: `/admin/comic/${id}`,
+        method: "GET",
+      }),
+    }),
+    updateComic: builder.mutation({
       query: ({ id, data }) => ({
         url: `/admin/comic/${id}`,
         method: "PATCH",
@@ -34,7 +40,8 @@ const ComicApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllComicsQuery,
+  useGetSingleComicQuery,
   useCreateComicMutation,
-  useUpdateComicQuery,
+  useUpdateComicMutation,
   useDeleteComicMutation,
 } = ComicApi;
