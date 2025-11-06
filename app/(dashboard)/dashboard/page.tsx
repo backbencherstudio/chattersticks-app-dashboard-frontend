@@ -7,7 +7,7 @@ import { useGetDashboardComicsQuery } from "@/rtk/features/all-apis/comics/comic
 
 const DashboardPage = () => {
   const { data } = useGetDashboardComicsQuery("");
-  console.log(data?.topComics);
+  console.log(data?.activityFeed);
   return (
     <div>
       <div className="space-y-6">
@@ -17,7 +17,7 @@ const DashboardPage = () => {
         <TopComicsCard comics={data?.topComics} />
       </div>
       <div className=" mt-6">
-        <LiveActivityFeed />
+        <LiveActivityFeed activity={data?.activityFeed} />
       </div>
     </div>
   );
