@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -8,8 +8,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+} from "@/components/ui/table";
+import React, { useEffect, useState } from "react";
 
 type Comic = {
   id: number;
@@ -18,31 +18,31 @@ type Comic = {
   downloads: number;
 };
 
-type SortOrder = 'asc' | 'desc' | null;
+type SortOrder = "asc" | "desc" | null;
 
 export default function TopComicsCard() {
   const [comics, setComics] = useState<Comic[]>([]);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
   useEffect(() => {
-    fetch('/data/topComics.json')
-      .then(res => res.json())
-      .then(data => setComics(data.comics))
+    fetch("/data/topComics.json")
+      .then((res) => res.json())
+      .then((data) => setComics(data.comics))
       .catch(console.error);
   }, []);
 
   // Sorting handler for Comic Name column (sort by downloads)
   function handleSort() {
     let newOrder: SortOrder;
-    if (sortOrder === 'asc') {
-      newOrder = 'desc';
+    if (sortOrder === "asc") {
+      newOrder = "desc";
     } else {
-      newOrder = 'asc';
+      newOrder = "asc";
     }
     setSortOrder(newOrder);
 
     const sorted = [...comics].sort((a, b) => {
-      if (newOrder === 'asc') {
+      if (newOrder === "asc") {
         return a.downloads - b.downloads;
       } else {
         return b.downloads - a.downloads;
@@ -79,7 +79,7 @@ export default function TopComicsCard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {comics.map(comic => (
+              {comics.map((comic) => (
                 <TableRow
                   key={comic.id}
                   className="bg-blue-50/30 hover:bg-blue-100/40"
@@ -103,9 +103,9 @@ export default function TopComicsCard() {
 
 // Small component to show sort arrow indicator
 const SortIndicator: React.FC<{ order: SortOrder }> = ({ order }) => {
-  if (order === 'asc') {
+  if (order === "asc") {
     return <span className="ml-2">▲</span>;
-  } else if (order === 'desc') {
+  } else if (order === "desc") {
     return <span className="ml-2">▼</span>;
   } else {
     return null;
