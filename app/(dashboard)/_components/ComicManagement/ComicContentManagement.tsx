@@ -5,9 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Eye, Pencil, Trash2 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
-import { useGetAllComicsQuery } from "../../../../rtk/features/all-apis/comics/comicsApi";
+import { toast } from "sonner";
+import {
+  useDeleteComicMutation,
+  useGetAllComicsQuery,
+} from "../../../../rtk/features/all-apis/comics/comicsApi";
 import AddComicModal from "./ComicModal";
+import EditComic from "./EditComic";
 
 interface Comic {
   id: number;
@@ -24,13 +30,19 @@ export default function ComicContentManagement() {
   const [openModal, setOpenModal] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [openEditModal, setOpenEditModal] = useState(false);
 
-  const { data } = useGetAllComicsQuery("");
+  const { data, isLoading, refetch } = useGetAllComicsQuery("");
+  const [deleteComic] = useDeleteComicMutation();
 
   // ✅ Filter comics by title based on search term
   const filteredComics = comics.filter((comic) =>
     comic.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (isLoading) {
+    return <p>Loading.......</p>;
+  }
 
   function handleSort() {
     let newOrder: SortOrder;
@@ -52,9 +64,16 @@ export default function ComicContentManagement() {
   }
 
   // ✅ Delete comic by id
-  const handleDelete = (id: number) => {
-    const updatedComics = comics.filter((comic) => comic.id !== id);
-    setComics(updatedComics);
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await deleteComic(id);
+      if (response?.data?.success) {
+        toast.success(response?.data?.message);
+        refetch();
+      }
+    } catch (error: any) {
+      toast.error(error);
+    }
   };
 
   return (
@@ -135,6 +154,9 @@ export default function ComicContentManagement() {
                         size="icon"
                         variant="outline"
                         className="cursor-pointer"
+                        onClick={() =>
+                          redirect(`/comic-management/${comic?.id}`)
+                        }
                       >
                         <Eye className="w-4 h-4 text-green-600" />
                       </Button>
@@ -142,7 +164,9 @@ export default function ComicContentManagement() {
                         size="icon"
                         variant="outline"
                         className="cursor-pointer"
-                        onClick={() => setOpenModal(true)}
+                        onClick={() => {
+                          setOpenEditModal(true);
+                        }}
                       >
                         <Pencil className="w-4 h-4 text-yellow-600" />
                       </Button>
@@ -234,6 +258,9 @@ export default function ComicContentManagement() {
 
       {/* Add New Comic Modal */}
       {openModal && <AddComicModal onClose={() => setOpenModal(false)} />}
+
+      {/* ✅ Edit Comic Modal */}
+      {openEditModal && <EditComic onClose={() => setOpenEditModal(false)} />}
     </div>
   );
 }
