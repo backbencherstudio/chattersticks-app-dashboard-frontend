@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateComicMutation } from "@/rtk/features/all-apis/comics/comicsApi";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ModalProps {
   onClose: () => void;
@@ -97,10 +98,14 @@ export default function AddComicModal({ onClose }: ModalProps) {
 
       const response = await CreateComic(formData);
 
-      console.log("Comic created successfully:", response);
+      if (response?.data?.success) {
+        toast.success(response?.data?.message);
+      }
+
       onClose();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error("Error submitting comic:", error);
+      toast.error("Error submitting comic:");
     } finally {
       setIsSubmitting(false);
     }

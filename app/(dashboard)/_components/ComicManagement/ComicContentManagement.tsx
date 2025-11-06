@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Eye, Pencil, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useGetAllComicsQuery } from "../../../../rtk/features/all-apis/comics/comicsApi";
 import AddComicModal from "./ComicModal";
 
@@ -25,21 +26,6 @@ export default function ComicContentManagement() {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const { data } = useGetAllComicsQuery("");
-
-  // ✅ Fetch data from local JSON file
-  useEffect(() => {
-    const fetchComics = async () => {
-      try {
-        const res = await fetch("/data/topComics.json");
-        const data = await res.json();
-        setComics(data.comics);
-      } catch (error) {
-        console.error("Error loading comics:", error);
-      }
-    };
-
-    fetchComics();
-  }, []);
 
   // ✅ Filter comics by title based on search term
   const filteredComics = comics.filter((comic) =>
@@ -117,8 +103,8 @@ export default function ComicContentManagement() {
               </tr>
             </thead>
             <tbody>
-              {filteredComics.length > 0 ? (
-                filteredComics.map((comic) => (
+              {data?.data?.length > 0 ? (
+                data?.data?.map((comic: any) => (
                   <tr
                     key={comic.id}
                     className="border-b hover:bg-gray-50 transition-colors"
@@ -129,8 +115,8 @@ export default function ComicContentManagement() {
                         by {comic.author}
                       </div>
                     </td>
-                    <td className="p-2">{comic.episodes} episodes</td>
-                    <td className="p-2">{comic.downloads.toLocaleString()}</td>
+                    <td className="p-2">{comic._count?.episodes} episodes</td>
+                    <td className="p-2">{comic.download_count}</td>
                     <td className="p-2">
                       <span
                         className={`${
