@@ -12,7 +12,7 @@ const userManagementApi = baseApi.injectEndpoints({
     }),
 
     getUserById: builder.query({
-      query: ({ id }) => `/admin/user/all-users/${id}`,
+      query: (id) => `/admin/user/user-details/${id}`,
       providesTags: ['users'],
     }),
   }),
