@@ -274,6 +274,7 @@ export default function ComicContentManagement() {
           comicId={selectedComicId!}
           onClose={() => {
             setOpenEditModal(false);
+            refetch();
           }}
         />
       )}
