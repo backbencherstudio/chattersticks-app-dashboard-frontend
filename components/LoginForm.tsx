@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +14,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 
-import { setCookie } from 'nookies';
+import { parseCookies, setCookie } from 'nookies';
 import { useLoginMutation } from '@/rtk/features/all-apis/auth/authApi';
 
 // Type-safe error interface
@@ -76,16 +76,21 @@ export default function LoginForm() {
     setShowOtp(false);
   };
 
+  // Redirect if token exists
+  useEffect(() => {
+    const cookies = parseCookies();
+    if (cookies.token) {
+      router.push('/dashboard');
+    }
+  }, [router]);
+
   const handleLogin = async () => {
     try {
       const res = await login({ email, password }).unwrap();
-
-      setCookie(null, 'token', res?.data?.token, {
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/',
-      });
-
-      router.push('/dashboard');
+      console.log(res);
+      // Save token
+      if (res?.success) {
+      }
     } catch (err) {
       console.log('Login failed', err);
     }
