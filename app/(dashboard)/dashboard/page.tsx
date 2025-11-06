@@ -7,14 +7,14 @@ import { useGetDashboardComicsQuery } from "@/rtk/features/all-apis/comics/comic
 
 const DashboardPage = () => {
   const { data } = useGetDashboardComicsQuery("");
-  console.log(data);
+  console.log(data?.topComics);
   return (
     <div>
       <div className="space-y-6">
         <DashboardCards comics={data?.stats} />
       </div>
       <div className=" mt-6">
-        <TopComicsCard />
+        <TopComicsCard comics={data?.topComics} />
       </div>
       <div className=" mt-6">
         <LiveActivityFeed />

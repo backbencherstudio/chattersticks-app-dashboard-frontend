@@ -12,44 +12,42 @@ import {
 import React, { useEffect, useState } from "react";
 
 type Comic = {
-  id: number;
+  id: string;
   title: string;
   author: string;
-  downloads: number;
+  download_count: number;
 };
 
 type SortOrder = "asc" | "desc" | null;
 
-export default function TopComicsCard() {
-  const [comics, setComics] = useState<Comic[]>([]);
+interface TopComicsCardProps {
+  comics?: Comic[];
+}
+
+export default function TopComicsCard({ comics = [] }: TopComicsCardProps) {
+  const [sortedComics, setSortedComics] = useState<Comic[]>([]);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
+  // Initialize comics list when data changes
   useEffect(() => {
-    fetch("/data/topComics.json")
-      .then((res) => res.json())
-      .then((data) => setComics(data.comics))
-      .catch(console.error);
-  }, []);
-
-  // Sorting handler for Comic Name column (sort by downloads)
-  function handleSort() {
-    let newOrder: SortOrder;
-    if (sortOrder === "asc") {
-      newOrder = "desc";
-    } else {
-      newOrder = "asc";
+    if (comics?.length > 0) {
+      setSortedComics(comics);
     }
+  }, [comics]);
+
+  // Sorting handler (by download_count)
+  const handleSort = () => {
+    const newOrder: SortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newOrder);
 
-    const sorted = [...comics].sort((a, b) => {
-      if (newOrder === "asc") {
-        return a.downloads - b.downloads;
-      } else {
-        return b.downloads - a.downloads;
-      }
-    });
-    setComics(sorted);
-  }
+    const sorted = [...sortedComics].sort((a, b) =>
+      newOrder === "asc"
+        ? a.download_count - b.download_count
+        : b.download_count - a.download_count
+    );
+
+    setSortedComics(sorted);
+  };
 
   return (
     <Card className="bg-blue-50/40 border border-blue-100 shadow-sm">
@@ -58,6 +56,7 @@ export default function TopComicsCard() {
           Top Downloaded Comics
         </CardTitle>
       </CardHeader>
+
       <CardContent>
         <div className="rounded-md border border-blue-100 overflow-hidden">
           <Table>
@@ -74,25 +73,37 @@ export default function TopComicsCard() {
                   Author/Creator
                 </TableHead>
                 <TableHead className="text-sm font-medium text-gray-600 text-right">
-                  Total Download
+                  Total Downloads
                 </TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
-              {comics.map((comic) => (
-                <TableRow
-                  key={comic.id}
-                  className="bg-blue-50/30 hover:bg-blue-100/40"
-                >
-                  <TableCell className="font-medium">{comic.title}</TableCell>
-                  <TableCell className="text-gray-700">
-                    by {comic.author}
-                  </TableCell>
-                  <TableCell className="text-right text-gray-800">
-                    {comic.downloads.toLocaleString()}
+              {sortedComics.length > 0 ? (
+                sortedComics.map((comic) => (
+                  <TableRow
+                    key={comic.id}
+                    className="bg-blue-50/30 hover:bg-blue-100/40"
+                  >
+                    <TableCell className="font-medium">{comic.title}</TableCell>
+                    <TableCell className="text-gray-700">
+                      by {comic.author}
+                    </TableCell>
+                    <TableCell className="text-right text-gray-800">
+                      {comic.download_count.toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={3}
+                    className="text-center text-gray-500 py-4"
+                  >
+                    No comics available.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>
@@ -103,11 +114,7 @@ export default function TopComicsCard() {
 
 // Small component to show sort arrow indicator
 const SortIndicator: React.FC<{ order: SortOrder }> = ({ order }) => {
-  if (order === "asc") {
-    return <span className="ml-2">▲</span>;
-  } else if (order === "desc") {
-    return <span className="ml-2">▼</span>;
-  } else {
-    return null;
-  }
+  if (order === "asc") return <span className="ml-2">▲</span>;
+  if (order === "desc") return <span className="ml-2">▼</span>;
+  return <span className="ml-2 opacity-40">⇅</span>;
 };
