@@ -6,9 +6,8 @@ const ComicApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/admin/comic",
         method: "POST",
-        body:data
+        body: data,
       }),
-     
     }),
     getAllComics: builder.query({
       query: (params) => ({
@@ -16,11 +15,8 @@ const ComicApi = baseApi.injectEndpoints({
         method: "GET",
         params: params,
       }),
-     
     }),
   }),
 });
 
 export const { useGetAllComicsQuery, useCreateComicMutation } = ComicApi;
-
-
