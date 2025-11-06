@@ -31,6 +31,7 @@ export default function ComicContentManagement() {
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedComicId, setSelectedComicId] = useState<string | null>(null);
 
   const { data, isLoading, refetch } = useGetAllComicsQuery("");
   const [deleteComic] = useDeleteComicMutation();
@@ -166,6 +167,7 @@ export default function ComicContentManagement() {
                         className="cursor-pointer"
                         onClick={() => {
                           setOpenEditModal(true);
+                          setSelectedComicId(comic.id);
                         }}
                       >
                         <Pencil className="w-4 h-4 text-yellow-600" />
@@ -257,10 +259,25 @@ export default function ComicContentManagement() {
       </Card>
 
       {/* Add New Comic Modal */}
-      {openModal && <AddComicModal onClose={() => setOpenModal(false)} />}
+      {openModal && (
+        <AddComicModal
+          onClose={() => {
+            setOpenModal(false);
+            refetch();
+          }}
+        />
+      )}
 
       {/* ✅ Edit Comic Modal */}
-      {openEditModal && <EditComic onClose={() => setOpenEditModal(false)} />}
+      {openEditModal && (
+        <EditComic
+          comicId={selectedComicId!}
+          onClose={() => {
+            setOpenEditModal(false);
+            refetch();
+          }}
+        />
+      )}
     </div>
   );
 }
