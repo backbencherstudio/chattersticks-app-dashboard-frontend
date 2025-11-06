@@ -88,6 +88,10 @@ export default function LoginForm() {
     try {
       const res = await login({ email, password }).unwrap();
       console.log(res);
+      // Save token
+      if (res?.success) {
+        router.push("/dashboard");
+      }
     } catch (err) {
       console.log("Login failed", err);
     }
