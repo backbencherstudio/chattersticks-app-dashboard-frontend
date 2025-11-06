@@ -1,4 +1,4 @@
-const { default: baseApi } = require('../../baseApi');
+import baseApi from '@/rtk/features/baseApi';
 
 const bookingManagementAPi = baseApi.injectEndpoints({
   endpoints: builder => ({

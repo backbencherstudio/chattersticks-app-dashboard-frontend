@@ -1,9 +1,15 @@
-'use client';
 import React from 'react';
 import Image from 'next/image';
 import LoginForm from '@/components/LoginForm';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 const LoginPage = () => {
+  const token = cookies().get('access_token')?.value;
+
+  if (token) {
+    redirect('/dashboard');
+  }
   return (
     <div className="min-h-screen bg-white">
       {/* Mobile Layout: flex-col with image on top, form below */}
