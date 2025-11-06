@@ -1,17 +1,15 @@
-import baseApi from "../../baseApi";
+import baseApi from '@/rtk/features/baseApi';
 
 const authApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     login: builder.mutation({
-      query: (body) => ({
-        url: "/auth/login",
-        method: "POST",
+      query: body => ({
+        url: '/auth/login',
+        method: 'POST',
         body: body,
       }),
-      invalidatesTags: ["user"],
+      invalidatesTags: ['user'],
     }),
-
-    
   }),
 });
 

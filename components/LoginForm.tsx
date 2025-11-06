@@ -13,11 +13,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-
 import { parseCookies, setCookie } from 'nookies';
 import { useLoginMutation } from '@/rtk/features/all-apis/auth/authApi';
 
-// Type-safe error interface
+// Types
 interface ApiError {
   data?: {
     message?: string | { message?: string };
@@ -25,6 +24,9 @@ interface ApiError {
   };
 }
 
+type ViewState = 'login' | 'forgot' | 'otp' | 'reset';
+
+// Helper functions
 const getErrorMessage = (err: unknown): string => {
   const e = err as ApiError;
 
@@ -41,67 +43,95 @@ const getErrorMessage = (err: unknown): string => {
 };
 
 // OTP Input Component
-const OtpInput = () => {
-  return (
-    <div className="flex justify-between gap-2">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <input
-          key={i}
-          maxLength={1}
-          className="h-12 w-12 border border-gray-300 rounded-lg text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      ))}
-    </div>
-  );
-};
+const OtpInput = () => (
+  <div className="flex justify-between gap-2">
+    {Array.from({ length: 4 }).map((_, i) => (
+      <input
+        key={i}
+        maxLength={1}
+        className="h-12 w-12 border border-gray-300 rounded-lg text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    ))}
+  </div>
+);
+
+// Back Button Component
+const BackButton = ({ onClick }: { onClick: () => void }) => (
+  <button
+    className="flex items-center gap-1 text-sm text-gray-500 mb-1"
+    onClick={onClick}
+  >
+    <ArrowLeft className="h-4 w-4" /> back
+  </button>
+);
 
 export default function LoginForm() {
-  const [showForgot, setShowForgot] = useState(false);
-  const [showOtp, setShowOtp] = useState(false);
-  const [showReset, setShowReset] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [login, { isLoading, isError, error }] = useLoginMutation();
 
-  const handleChangePassword = () => setShowSuccessModal(true);
+  // Form state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleBackToLogin = () => {
-    setShowSuccessModal(false);
-    setShowReset(false);
-    setShowForgot(false);
-    setShowOtp(false);
-  };
+  // View state
+  const [currentView, setCurrentView] = useState<ViewState>('login');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // Redirect if token exists
+  // Redirect if already logged in
   useEffect(() => {
     const cookies = parseCookies();
-    if (cookies.token) {
+    if (cookies.access_token) {
       router.push('/dashboard');
     }
   }, [router]);
 
+  // Handlers
   const handleLogin = async () => {
     try {
       const res = await login({ email, password }).unwrap();
-      console.log(res);
-      // Save token
+
       if (res?.success) {
+        const accessToken = res?.authorization?.access_token;
+        const refreshToken = res?.authorization?.refresh_token;
+
+        // ✅ Set cookies using nookies
+        setCookie(null, 'access_token', accessToken, {
+          maxAge: 60 * 60 * 24, // 1 day
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+        });
+
+        setCookie(null, 'refresh_token', refreshToken, {
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+        });
+
+        router.push('/dashboard');
       }
     } catch (err) {
-      console.log('Login failed', err);
+      console.error('Login failed:', err);
     }
+  };
+
+  const handleBackToLogin = () => {
+    setCurrentView('login');
+    setShowSuccessModal(false);
+  };
+
+  const handlePasswordReset = () => {
+    setShowSuccessModal(true);
   };
 
   const errorMessage = isError ? getErrorMessage(error) : '';
 
   return (
     <div className="md:min-h-screen flex items-center justify-center">
-      {/* LOGIN */}
-      {!showForgot && !showOtp && !showReset && (
+      {/* LOGIN VIEW */}
+      {currentView === 'login' && (
         <Card className="md:w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">Welcome 👋</CardTitle>
@@ -149,10 +179,9 @@ export default function LoginForm() {
                   <input type="checkbox" className="accent-blue-600" />
                   Remember me
                 </label>
-
                 <button
                   type="button"
-                  onClick={() => setShowForgot(true)}
+                  onClick={() => setCurrentView('forgot')}
                   className="text-blue-600 hover:underline"
                 >
                   Forgot password?
@@ -175,21 +204,11 @@ export default function LoginForm() {
         </Card>
       )}
 
-      {/* FORGOT PASSWORD */}
-      {showForgot && !showOtp && !showReset && (
+      {/* FORGOT PASSWORD VIEW */}
+      {currentView === 'forgot' && (
         <Card className="w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
-            <div className="flex items-center gap-2 mb-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowForgot(false)}
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <span className="text-sm text-gray-600">back</span>
-            </div>
-
+            <BackButton onClick={() => setCurrentView('login')} />
             <CardTitle className="text-xl font-semibold">
               Forgot Password
             </CardTitle>
@@ -208,9 +227,8 @@ export default function LoginForm() {
                   className="mt-1"
                 />
               </div>
-
               <Button
-                onClick={() => setShowOtp(true)}
+                onClick={() => setCurrentView('otp')}
                 className="w-full bg-blue-500"
               >
                 Send OTP
@@ -220,17 +238,11 @@ export default function LoginForm() {
         </Card>
       )}
 
-      {/* OTP */}
-      {showOtp && !showReset && (
+      {/* OTP VIEW */}
+      {currentView === 'otp' && (
         <Card className="w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
-            <button
-              className="flex items-center gap-1 text-sm text-gray-500 mb-1"
-              onClick={() => setShowOtp(false)}
-            >
-              <ArrowLeft className="h-4 w-4" /> back
-            </button>
-
+            <BackButton onClick={() => setCurrentView('forgot')} />
             <CardTitle className="text-xl font-semibold">Enter OTP</CardTitle>
             <p className="text-sm text-gray-500">
               We have sent a code to your email.
@@ -241,7 +253,7 @@ export default function LoginForm() {
             <div className="flex flex-col gap-4">
               <OtpInput />
               <Button
-                onClick={() => setShowReset(true)}
+                onClick={() => setCurrentView('reset')}
                 className="w-full bg-blue-500"
               >
                 Verify
@@ -251,17 +263,11 @@ export default function LoginForm() {
         </Card>
       )}
 
-      {/* RESET PASSWORD */}
-      {showReset && (
+      {/* RESET PASSWORD VIEW */}
+      {currentView === 'reset' && (
         <Card className="w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
-            <button
-              className="flex items-center gap-1 text-sm text-gray-500 mb-1"
-              onClick={() => setShowReset(false)}
-            >
-              <ArrowLeft className="h-4 w-4" /> back
-            </button>
-
+            <BackButton onClick={() => setCurrentView('otp')} />
             <CardTitle className="text-xl font-semibold">
               Reset Password
             </CardTitle>
@@ -277,7 +283,6 @@ export default function LoginForm() {
                   className="mt-1"
                 />
               </div>
-
               <div>
                 <label className="text-sm font-medium">Confirm Password</label>
                 <Input
@@ -286,9 +291,8 @@ export default function LoginForm() {
                   className="mt-1"
                 />
               </div>
-
               <Button
-                onClick={handleChangePassword}
+                onClick={handlePasswordReset}
                 className="w-full bg-blue-500"
               >
                 Change Password
@@ -298,7 +302,7 @@ export default function LoginForm() {
         </Card>
       )}
 
-      {/* SUCCESS */}
+      {/* SUCCESS MODAL */}
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

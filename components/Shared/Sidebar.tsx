@@ -6,7 +6,7 @@ import { FiLogOut } from 'react-icons/fi';
 import SideBarMenu from '../Sidebar/SidebarMenu';
 import Image from 'next/image';
 import { Settings } from 'lucide-react';
-
+import { destroyCookie } from 'nookies';
 import { useSettingsModal } from '@/context/SettingsModalContext';
 
 export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
@@ -20,7 +20,9 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
 
   const handleLogout = () => {
     setIsLoading(true);
-
+      destroyCookie(null, 'access_token', { path: '/' });
+      destroyCookie(null, 'refresh_token', { path: '/' });
+     
     router.push('/login');
   };
   const handleSettings = () => {
@@ -125,6 +127,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
                 isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'
               } p-3 rounded-lg text-[#4A4C56] hover:bg-gray-100`}
               title={isCollapsed ? 'Logout' : ''}
+              disabled={isLoading}
             >
               <FiLogOut className="w-5 h-5 shrink-0 text-gray-500" />
               <span
@@ -134,7 +137,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
                     : 'opacity-100 max-w-[160px] ml-2'
                 } overflow-hidden whitespace-nowrap align-middle inline-block`}
               >
-                Logout
+                {isLoading ? 'Logging out...' : 'Logout'}
               </span>
             </button>
           </div>
