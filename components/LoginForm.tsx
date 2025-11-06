@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { parseCookies, setCookie } from 'nookies';
-import { useLoginMutation } from '@/rtk/features/all-apis/auth/authApi';
+import { useLoginMutation } from "@/rtk/features/all-apis/auth/authApi";
+import { parseCookies } from "nookies";
 
 // Type-safe error interface
 interface ApiError {
@@ -28,16 +28,16 @@ interface ApiError {
 const getErrorMessage = (err: unknown): string => {
   const e = err as ApiError;
 
-  if (typeof e?.data?.message === 'string') return e.data.message;
+  if (typeof e?.data?.message === "string") return e.data.message;
   if (
-    typeof e?.data?.message === 'object' &&
-    typeof e.data.message?.message === 'string'
+    typeof e?.data?.message === "object" &&
+    typeof e.data.message?.message === "string"
   ) {
     return e.data.message.message;
   }
-  if (typeof e?.data?.error === 'string') return e.data.error;
+  if (typeof e?.data?.error === "string") return e.data.error;
 
-  return 'Login failed';
+  return "Login failed";
 };
 
 // OTP Input Component
@@ -63,8 +63,8 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [login, { isLoading, isError, error }] = useLoginMutation();
 
   const handleChangePassword = () => setShowSuccessModal(true);
@@ -80,7 +80,7 @@ export default function LoginForm() {
   useEffect(() => {
     const cookies = parseCookies();
     if (cookies.token) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   }, [router]);
 
@@ -88,15 +88,12 @@ export default function LoginForm() {
     try {
       const res = await login({ email, password }).unwrap();
       console.log(res);
-      // Save token
-      if (res?.success) {
-      }
     } catch (err) {
-      console.log('Login failed', err);
+      console.log("Login failed", err);
     }
   };
 
-  const errorMessage = isError ? getErrorMessage(error) : '';
+  const errorMessage = isError ? getErrorMessage(error) : "";
 
   return (
     <div className="md:min-h-screen flex items-center justify-center">
@@ -117,7 +114,7 @@ export default function LoginForm() {
                   placeholder="name@example.com"
                   className="mt-1"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -125,10 +122,10 @@ export default function LoginForm() {
                 <label className="text-sm font-medium">Password</label>
                 <div className="relative mt-1">
                   <Input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
@@ -164,7 +161,7 @@ export default function LoginForm() {
                 onClick={handleLogin}
                 disabled={isLoading}
               >
-                {isLoading ? 'Please wait...' : 'Login'}
+                {isLoading ? "Please wait..." : "Login"}
               </Button>
 
               {isError && (
