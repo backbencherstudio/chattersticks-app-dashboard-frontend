@@ -20,7 +20,7 @@ interface Episode {
   images: File[];
 }
 
-export default function AddComicModal({ onClose }: ModalProps) {
+export default function EditComic({ onClose }: ModalProps) {
   const [comicTitle, setComicTitle] = useState("");
   const [authorCreator, setAuthorCreator] = useState("");
   const [status, setStatus] = useState("");
@@ -120,7 +120,7 @@ export default function AddComicModal({ onClose }: ModalProps) {
       <CardSmallScreen className="w-full max-w-5xl relative max-h-[90vh] overflow-y-auto rounded-lg">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b px-6 py-6 flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Add New Comic</h3>
+          <h3 className="text-lg font-semibold">Update Comic</h3>
           <button
             className="text-gray-400 hover:text-gray-600"
             onClick={onClose}
@@ -313,7 +313,7 @@ export default function AddComicModal({ onClose }: ModalProps) {
             onClick={handleSubmit}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Create Comic Series"}
+            {isSubmitting ? "Updatting..." : "Update"}
           </Button>
         </div>
       </CardSmallScreen>

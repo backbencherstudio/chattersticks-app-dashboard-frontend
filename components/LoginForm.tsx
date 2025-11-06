@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { parseCookies, setCookie } from 'nookies';
-import { useLoginMutation } from '@/rtk/features/all-apis/auth/authApi';
+} from "@/components/ui/dialog";
+import { useLoginMutation } from "@/rtk/features/all-apis/auth/authApi";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { parseCookies, setCookie } from "nookies";
+import { useEffect, useState } from "react";
+import { Input } from "./ui/input";
 
 // Types
 interface ApiError {
@@ -24,22 +24,22 @@ interface ApiError {
   };
 }
 
-type ViewState = 'login' | 'forgot' | 'otp' | 'reset';
+type ViewState = "login" | "forgot" | "otp" | "reset";
 
 // Helper functions
 const getErrorMessage = (err: unknown): string => {
   const e = err as ApiError;
 
-  if (typeof e?.data?.message === 'string') return e.data.message;
+  if (typeof e?.data?.message === "string") return e.data.message;
   if (
-    typeof e?.data?.message === 'object' &&
-    typeof e.data.message?.message === 'string'
+    typeof e?.data?.message === "object" &&
+    typeof e.data.message?.message === "string"
   ) {
     return e.data.message.message;
   }
-  if (typeof e?.data?.error === 'string') return e.data.error;
+  if (typeof e?.data?.error === "string") return e.data.error;
 
-  return 'Login failed';
+  return "Login failed";
 };
 
 // OTP Input Component
@@ -70,19 +70,19 @@ export default function LoginForm() {
   const [login, { isLoading, isError, error }] = useLoginMutation();
 
   // Form state
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   // View state
-  const [currentView, setCurrentView] = useState<ViewState>('login');
+  const [currentView, setCurrentView] = useState<ViewState>("login");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Redirect if already logged in
   useEffect(() => {
     const cookies = parseCookies();
     if (cookies.access_token) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   }, [router]);
 
@@ -96,29 +96,29 @@ export default function LoginForm() {
         const refreshToken = res?.authorization?.refresh_token;
 
         // ✅ Set cookies using nookies
-        setCookie(null, 'access_token', accessToken, {
+        setCookie(null, "access_token", accessToken, {
           maxAge: 60 * 60 * 24, // 1 day
-          path: '/',
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
         });
 
-        setCookie(null, 'refresh_token', refreshToken, {
+        setCookie(null, "refresh_token", refreshToken, {
           maxAge: 60 * 60 * 24 * 7, // 7 days
-          path: '/',
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
         });
 
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     } catch (err) {
-      console.error('Login failed:', err);
+      console.error("Login failed:", err);
     }
   };
 
   const handleBackToLogin = () => {
-    setCurrentView('login');
+    setCurrentView("login");
     setShowSuccessModal(false);
   };
 
@@ -126,12 +126,12 @@ export default function LoginForm() {
     setShowSuccessModal(true);
   };
 
-  const errorMessage = isError ? getErrorMessage(error) : '';
+  const errorMessage = isError ? getErrorMessage(error) : "";
 
   return (
     <div className="md:min-h-screen flex items-center justify-center">
       {/* LOGIN VIEW */}
-      {currentView === 'login' && (
+      {currentView === "login" && (
         <Card className="md:w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">Welcome 👋</CardTitle>
@@ -147,7 +147,7 @@ export default function LoginForm() {
                   placeholder="name@example.com"
                   className="mt-1"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -155,10 +155,10 @@ export default function LoginForm() {
                 <label className="text-sm font-medium">Password</label>
                 <div className="relative mt-1">
                   <Input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
@@ -181,7 +181,7 @@ export default function LoginForm() {
                 </label>
                 <button
                   type="button"
-                  onClick={() => setCurrentView('forgot')}
+                  onClick={() => setCurrentView("forgot")}
                   className="text-blue-600 hover:underline"
                 >
                   Forgot password?
@@ -193,7 +193,7 @@ export default function LoginForm() {
                 onClick={handleLogin}
                 disabled={isLoading}
               >
-                {isLoading ? 'Please wait...' : 'Login'}
+                {isLoading ? "Please wait..." : "Login"}
               </Button>
 
               {isError && (
@@ -205,10 +205,10 @@ export default function LoginForm() {
       )}
 
       {/* FORGOT PASSWORD VIEW */}
-      {currentView === 'forgot' && (
+      {currentView === "forgot" && (
         <Card className="w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
-            <BackButton onClick={() => setCurrentView('login')} />
+            <BackButton onClick={() => setCurrentView("login")} />
             <CardTitle className="text-xl font-semibold">
               Forgot Password
             </CardTitle>
@@ -228,7 +228,7 @@ export default function LoginForm() {
                 />
               </div>
               <Button
-                onClick={() => setCurrentView('otp')}
+                onClick={() => setCurrentView("otp")}
                 className="w-full bg-blue-500"
               >
                 Send OTP
@@ -239,10 +239,10 @@ export default function LoginForm() {
       )}
 
       {/* OTP VIEW */}
-      {currentView === 'otp' && (
+      {currentView === "otp" && (
         <Card className="w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
-            <BackButton onClick={() => setCurrentView('forgot')} />
+            <BackButton onClick={() => setCurrentView("forgot")} />
             <CardTitle className="text-xl font-semibold">Enter OTP</CardTitle>
             <p className="text-sm text-gray-500">
               We have sent a code to your email.
@@ -253,7 +253,7 @@ export default function LoginForm() {
             <div className="flex flex-col gap-4">
               <OtpInput />
               <Button
-                onClick={() => setCurrentView('reset')}
+                onClick={() => setCurrentView("reset")}
                 className="w-full bg-blue-500"
               >
                 Verify
@@ -264,10 +264,10 @@ export default function LoginForm() {
       )}
 
       {/* RESET PASSWORD VIEW */}
-      {currentView === 'reset' && (
+      {currentView === "reset" && (
         <Card className="w-[350px] shadow-xl rounded-2xl">
           <CardHeader>
-            <BackButton onClick={() => setCurrentView('otp')} />
+            <BackButton onClick={() => setCurrentView("otp")} />
             <CardTitle className="text-xl font-semibold">
               Reset Password
             </CardTitle>
