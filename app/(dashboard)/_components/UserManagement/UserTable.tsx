@@ -107,18 +107,19 @@ export default function UserTable() {
               <tbody>
                 {sortedUsers.map((user, i) => (
                   <tr key={i} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4">{user.username}</td>
+                    <td className="py-3 px-4">{user.userName}</td>
                     <td className="py-3 px-4">
                       <Image
-                        src={user.photo}
+                        src={user.Photos}
                         alt="profile"
                         width={38}
                         height={38}
                         className="rounded-full object-cover"
+                       
                       />
                     </td>
-                    <td className="py-3 px-4">{user.email}</td>
-                    <td className="py-3 px-4">{user.joinedDate}</td>
+                    <td className="py-3 px-4">{user.Email}</td>
+                    <td className="py-3 px-4">{user.Joindate}</td>
                     <td className="py-3 px-4">{user.lastActive}</td>
                     <td className="py-3 px-4 text-center">
                       <button
