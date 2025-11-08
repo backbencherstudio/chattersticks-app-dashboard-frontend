@@ -10,6 +10,7 @@ import {
   useUpdateComicMutation,
 } from "@/rtk/features/all-apis/comics/comicsApi";
 import { X } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -19,9 +20,11 @@ interface ModalProps {
 }
 
 interface Episode {
+  images_urls: any;
   id?: string;
   title: string;
   thumbnail: File | null;
+  thumbnail_url?: string;
   images: File[];
   episode_number: number;
 }
@@ -34,6 +37,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
   const [description, setDescription] = useState("");
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [thumbnailRemoved, setThumbnailRemoved] = useState(false);
 
   const [updateComic] = useUpdateComicMutation();
   const { data } = useGetSingleComicQuery(comicId);
@@ -52,7 +56,9 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
           id: ep.id,
           title: ep.title,
           thumbnail: null,
+          thumbnail_url: ep.thumbnail_url,
           images: [],
+          images_urls: ep.images_urls || [],
           episode_number: ep.episode_number,
         }));
         setEpisodes(formattedEpisodes);
@@ -97,20 +103,30 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
   // Add new episode
   const editEpisode = () => {
     const newEpisode: Episode = {
+      id: crypto.randomUUID(),
       episode_number: episodes.length + 1,
       title: "",
       thumbnail: null,
       images: [],
+      images_urls: undefined,
     };
     setEpisodes([...episodes, newEpisode]);
   };
 
   // Remove episode
-  const removeEpisode = (id?: string) => {
-    setEpisodes((prev) => prev.filter((ep) => ep.id !== id));
+  const removeEpisode = (index?: number) => {
+    setEpisodes((prev) => {
+      const updated = prev.filter((_, i) => i !== index);
+
+      const renumbered = updated.map((ep, i) => ({
+        ...ep,
+        episode_number: i + 1,
+      }));
+
+      return renumbered;
+    });
   };
 
-  // ✅ Submit handler (build FormData matching backend structure)
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
@@ -162,7 +178,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
             className="text-gray-400 hover:text-gray-600"
             onClick={onClose}
           >
-            <X size={20} />
+            <X size={20} className="cursor-pointer" />
           </button>
         </div>
 
@@ -229,6 +245,36 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                   }
                 />
               </label>
+
+              {!thumbnailRemoved && (thumbnail || comic?.thumbnail_url) && (
+                <div className="mt-3 relative inline-block">
+                  <p className="text-xs text-gray-500 mb-1">Preview:</p>
+                  <div className="relative w-32 h-32">
+                    <Image
+                      src={
+                        thumbnail
+                          ? URL.createObjectURL(thumbnail)
+                          : comic.thumbnail_url
+                      }
+                      alt="Comic Thumbnail"
+                      className="w-32 h-32 object-cover rounded-md border"
+                      height={400}
+                      width={400}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setThumbnail(null);
+                        setThumbnailRemoved(true);
+                      }}
+                      className="absolute top-1 right-1 bg-white/80 hover:bg-red-100 text-red-600 rounded-full p-1 cursor-pointer"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Description */}
@@ -251,7 +297,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
               <h4 className="text-sm font-semibold">Episodes</h4>
               <Button
                 onClick={editEpisode}
-                className="bg-green-600 hover:bg-green-700 text-white h-8 px-4 text-sm"
+                className="bg-green-600 hover:bg-green-700 text-white h-8 px-4 text-sm cursor-pointer"
               >
                 Add Episode
               </Button>
@@ -265,23 +311,62 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
               {episodes.map((ep, index) => (
                 <div
                   key={ep.id ?? index}
-                  className="border rounded-md p-3 bg-gray-50 space-y-3"
+                  className="border rounded-md p-6 bg-gray-50 space-y-3"
                 >
                   <div
                     className="relative cursor-pointer"
-                    onClick={() => removeEpisode(ep.id)}
+                    onClick={() => removeEpisode(index)}
                   >
                     <X className="h-3 w-3 absolute right-0" />
                   </div>
 
-                  <div className="grid grid-cols-6 gap-2 items-center">
-                    <div>
-                      <h2 className="p-3 bg-gray-200 text-purple-800 text-center text-sm rounded-md">
+                  <div className="grid grid-cols-6 gap-2 items-start">
+                    {/* ✅ Left column: Episode number + Thumbnail preview */}
+                    <div className="flex flex-col items-center gap-2">
+                      <h2 className="p-3 bg-gray-200 text-purple-800 text-center text-sm rounded-md w-12">
                         {ep.episode_number}
                       </h2>
+
+                      {/* Thumbnail Preview BELOW episode number */}
+                      {(ep.thumbnail || ep.thumbnail_url) && (
+                        <div className="relative w-20 h-20 mt-1">
+                          <Image
+                            src={
+                              ep.thumbnail
+                                ? URL.createObjectURL(ep.thumbnail)
+                                : ep.thumbnail_url || ""
+                            }
+                            alt={`Episode ${index + 1} Thumbnail`}
+                            className="w-20 h-20 object-cover rounded-md border"
+                            height={400}
+                            width={400}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEpisodes((prev) =>
+                                prev.map((episode) =>
+                                  episode.id === ep.id
+                                    ? {
+                                        ...episode,
+                                        thumbnail: null,
+                                        thumbnail_url: undefined,
+                                      }
+                                    : episode
+                                )
+                              );
+                            }}
+                            className="absolute top-1 right-1 bg-white/80 hover:bg-red-100 text-red-600 rounded-full p-1 shadow cursor-pointer"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      )}
                     </div>
 
+                    {/* ✅ Right column: Episode title + Thumbnail upload input */}
                     <div className="col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* Title Input */}
                       <div>
                         <label className="text-xs font-medium block mb-1">
                           Episode Title
@@ -296,6 +381,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                         />
                       </div>
 
+                      {/* Thumbnail upload field */}
                       <div>
                         <label className="text-xs font-medium block mb-1">
                           Episode Thumbnail
@@ -340,6 +426,98 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                         }
                       />
                     </label>
+
+                    {(ep.images.length > 0 ||
+                      (ep.images_urls && ep.images_urls.length > 0)) && (
+                      <div className="mt-2 grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        {/* Existing images from backend */}
+                        {ep.images_urls?.map(
+                          (imgUrl: string | Blob | undefined, i: number) => (
+                            <div
+                              key={`url-${i}`}
+                              className="relative w-24 h-24"
+                            >
+                              <p className="text-[10px] text-gray-500 mb-1">
+                                Preview:
+                              </p>
+                              <div className="relative w-24 h-24">
+                                <Image
+                                  src={
+                                    imgUrl instanceof Blob
+                                      ? URL.createObjectURL(imgUrl)
+                                      : imgUrl || ""
+                                  }
+                                  alt={`Episode Image ${i + 1}`}
+                                  className="w-24 h-24 object-cover rounded-md border"
+                                  height={400}
+                                  width={400}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setEpisodes((prev) =>
+                                      prev.map((episode) =>
+                                        episode.id === ep.id
+                                          ? {
+                                              ...episode,
+                                              images_urls:
+                                                episode.images_urls?.filter(
+                                                  (_: any, index: number) =>
+                                                    index !== i
+                                                ),
+                                            }
+                                          : episode
+                                      )
+                                    )
+                                  }
+                                  className="absolute top-1 right-1 bg-white/80 hover:bg-red-100 text-red-600 rounded-full p-1 shadow cursor-pointer"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </div>
+                          )
+                        )}
+
+                        {/* Newly added local images */}
+                        {ep.images.map((file, i) => (
+                          <div key={`file-${i}`} className="relative w-24 h-24">
+                            <p className="text-[10px] text-gray-500 mb-1">
+                              Preview:
+                            </p>
+                            <div className="relative w-24 h-24">
+                              <Image
+                                src={URL.createObjectURL(file)}
+                                alt={`Uploaded Image ${i + 1}`}
+                                className="w-24 h-24 object-cover rounded-md border"
+                                height={400}
+                                width={400}
+                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setEpisodes((prev) =>
+                                    prev.map((episode) =>
+                                      episode.id === ep.id
+                                        ? {
+                                            ...episode,
+                                            images: episode.images.filter(
+                                              (_, index) => index !== i
+                                            ),
+                                          }
+                                        : episode
+                                    )
+                                  )
+                                }
+                                className="absolute top-1 right-1 bg-white/80 hover:bg-red-100 text-red-600 rounded-full p-1 shadow cursor-pointer"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -349,11 +527,15 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
 
         {/* Footer */}
         <div className="sticky bottom-0 bg-white border-t px-6 py-4 flex justify-end gap-3">
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="cursor-pointer"
+          >
             Cancel
           </Button>
           <Button
-            className="bg-green-600 hover:bg-green-700 text-white"
+            className="bg-green-600 hover:bg-green-700 text-white cursor-pointer"
             onClick={handleSubmit}
             disabled={isSubmitting}
           >
