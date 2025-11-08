@@ -1,0 +1,17 @@
+[
+  {
+    "type": "upload",
+    "message": "New comic **Pixel Power Rangers #5** published.",
+    "time": "1 minute ago"
+  },
+  {
+    "type": "user",
+    "message": "User **newbie_reader** registered.",
+    "time": "1 hour ago"
+  },
+  {
+    "type": "content",
+    "message": "Comic **The Last City** status changed to Draft.",
+    "time": "3 hours ago"
+  }
+]

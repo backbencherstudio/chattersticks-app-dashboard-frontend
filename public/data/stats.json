@@ -1,0 +1,25 @@
+{
+  "stats": [
+    {
+      "id": 1,
+      "icon": "users",
+      "value": 19674,
+      "label": "Total Users",
+      "color": "bg-amber-50"
+    },
+    {
+      "id": 2,
+      "icon": "book",
+      "value": 4,
+      "label": "Total Comics",
+      "color": "bg-indigo-50"
+    },
+    {
+      "id": 3,
+      "icon": "download",
+      "value": 16300,
+      "label": "Total Downloads",
+      "color": "bg-blue-50"
+    }
+  ]
+}

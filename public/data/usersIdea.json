@@ -1,0 +1,33 @@
+[
+  {
+    "username": "comic_fan_78",
+    "photo": "/images/user01.png",
+    "email": "fan78@example.com",
+    "userId": 101,
+    "ideas": "Implement a Read Later feature for saving comics found through search results. Suggest a dark mode option for better reading at night."
+  },
+  {
+    "username": "reader_one",
+    "photo": "/images/user01.png",
+    "email": "read1@example.com",
+    "userId": 102,
+    
+    "ideas": "Improve mobile gestures for **page-turning** and zooming. Add a feature to **sync reading progress** across different devices instantly."
+  },
+  {
+    "username": "admin_test1",
+    "photo": "/images/user01.png",
+    "email": "admin@example.com",
+    "userId": 103,
+    
+    "ideas": "Create a **moderation dashboard** for reviewing user-submitted content. Develop a reporting tool for monthly **active user engagement** metrics."
+  },
+  {
+    "username": "newbie_reader",
+    "photo": "/images/user01.png",
+    "email": "newb@example.com",
+    "userId": 104,
+    
+    "ideas": "Introduce a **beginner's guide/tutorial** upon first login. Add **curated lists** like 'Top 10 Starter Comics' to aid new users in finding content."
+  }
+]

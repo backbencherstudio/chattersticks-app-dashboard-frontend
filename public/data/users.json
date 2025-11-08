@@ -1,0 +1,42 @@
+[
+  {
+    "username": "comic_fun_78",
+    "photo": "/images/user01.png",
+    "email": "fan78@example.com",
+    "joinedDate": "2024-01-15",
+    "lastActive": "2024-08-27",
+    "userId": 101,
+    "favouriteComics": 3,
+    "PrimaryDevice": "Desktop"
+  },
+  {
+    "username": "reader_one",
+    "photo": "/images/user01.png",
+    "email": "read1@example.com",
+    "joinedDate": "2024-03-22",
+    "lastActive": "2024-08-25",
+    "userId": 102,
+    "favouriteComics": 5,
+    "PrimaryDevice": "Mobile"
+  },
+  {
+    "username": "admin_test1",
+    "photo": "/images/user01.png",
+    "email": "admin@example.com",
+    "joinedDate": "2023-11-01",
+    "lastActive": "2024-08-28",
+    "userId": 103,
+    "favouriteComics": 2,
+    "PrimaryDevice": "Desktop"
+  },
+  {
+    "username": "newbie_reader",
+    "photo": "/images/user01.png",
+    "email": "newb@example.com",
+    "joinedDate": "2024-08-28",
+    "lastActive": "2024-08-28",
+    "userId": 104,
+    "favouriteComics": 10,
+    "PrimaryDevice": "Tablet"
+  }
+]
