@@ -36,18 +36,12 @@ export default function ComicContentManagement() {
 
   const pagination = data?.pagination;
 
-  console.log(pagination);
-
   const allComics = data?.data ?? [];
 
   // ✅ Filter comics by title
   const filteredComics = allComics.filter((comic: any) =>
     comic.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   if (isLoading) {
     return <p className="text-center text-gray-600">Loading comics...</p>;
