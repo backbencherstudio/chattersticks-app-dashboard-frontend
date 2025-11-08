@@ -103,7 +103,6 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
   // Add new episode
   const editEpisode = () => {
     const newEpisode: Episode = {
-      id: crypto.randomUUID(),
       episode_number: episodes.length + 1,
       title: "",
       thumbnail: null,
@@ -148,8 +147,8 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
         if (ep.thumbnail)
           formData.append(`episodes[${index}][thumbnail]`, ep.thumbnail);
 
-        ep.images.forEach((img, i) => {
-          formData.append(`episodes[${index}][images][${i}]`, img);
+        ep.images.forEach((img) => {
+          formData.append(`episodes[${index}][images][]`, img);
         });
       });
 
@@ -161,6 +160,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
       } else {
         toast.error("Failed to update comic.");
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error: any) {
       toast.error("Error submitting comic.");
     } finally {
@@ -305,7 +305,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
 
             <div
               className={`space-y-3 ${
-                episodes.length >= 3 ? "max-h-[400px] overflow-y-auto pr-2" : ""
+                episodes.length >= 3 ? "max-h-screen overflow-y-auto pr-2" : ""
               }`}
             >
               {episodes.map((ep, index) => (
@@ -323,45 +323,65 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                   <div className="grid grid-cols-6 gap-2 items-start">
                     {/* ✅ Left column: Episode number + Thumbnail preview */}
                     <div className="flex flex-col items-center gap-2">
-                      <h2 className="p-3 bg-gray-200 text-purple-800 text-center text-sm rounded-md w-12">
-                        {ep.episode_number}
-                      </h2>
+                      <div className="flex flex-col items-center">
+                        <label className="text-xs font-medium block mb-1 text-nowrap">
+                          Episode No
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          value={ep.episode_number}
+                          onChange={(e) => {
+                            const newNumber = parseInt(e.target.value, 10) || 0;
+                            setEpisodes((prev) =>
+                              prev.map((episode) =>
+                                episode.id === ep.id
+                                  ? { ...episode, episode_number: newNumber }
+                                  : episode
+                              )
+                            );
+                          }}
+                          className="w-12 h-12 text-center font-semibold bg-gray-200 text-purple-800 rounded-md border-none focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                        />
+                      </div>
 
                       {/* Thumbnail Preview BELOW episode number */}
-                      {(ep.thumbnail || ep.thumbnail_url) && (
-                        <div className="relative w-20 h-20 mt-1">
-                          <Image
-                            src={
-                              ep.thumbnail
-                                ? URL.createObjectURL(ep.thumbnail)
-                                : ep.thumbnail_url || ""
-                            }
-                            alt={`Episode ${index + 1} Thumbnail`}
-                            className="w-20 h-20 object-cover rounded-md border"
-                            height={400}
-                            width={400}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEpisodes((prev) =>
-                                prev.map((episode) =>
-                                  episode.id === ep.id
-                                    ? {
-                                        ...episode,
-                                        thumbnail: null,
-                                        thumbnail_url: undefined,
-                                      }
-                                    : episode
-                                )
-                              );
-                            }}
-                            className="absolute top-1 right-1 bg-white/80 hover:bg-red-100 text-red-600 rounded-full p-1 shadow cursor-pointer"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                      )}
+                      <div className="w-12 mt-2">
+                        {(ep.thumbnail || ep.thumbnail_url) && (
+                          <div className="relative w-20 h-20 mt-1">
+                            <Image
+                              src={
+                                ep.thumbnail
+                                  ? URL.createObjectURL(ep.thumbnail)
+                                  : ep.thumbnail_url || ""
+                              }
+                              alt={`Episode ${index + 1} Thumbnail`}
+                              className="w-20 h-20 object-cover rounded-md border"
+                              height={400}
+                              width={400}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEpisodes((prev) =>
+                                  prev.map((episode) =>
+                                    episode.id === ep.id
+                                      ? {
+                                          ...episode,
+                                          thumbnail: null,
+                                          thumbnail_url: undefined,
+                                        }
+                                      : episode
+                                  )
+                                );
+                              }}
+                              className="absolute top-1 right-1 bg-white/80 hover:bg-red-100 text-red-600 rounded-full p-1 shadow cursor-pointer"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     {/* ✅ Right column: Episode title + Thumbnail upload input */}
@@ -431,15 +451,13 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                       (ep.images_urls && ep.images_urls.length > 0)) && (
                       <div className="mt-2 grid grid-cols-3 sm:grid-cols-4 gap-2">
                         {/* Existing images from backend */}
+
                         {ep.images_urls?.map(
                           (imgUrl: string | Blob | undefined, i: number) => (
                             <div
                               key={`url-${i}`}
                               className="relative w-24 h-24"
                             >
-                              <p className="text-[10px] text-gray-500 mb-1">
-                                Preview:
-                              </p>
                               <div className="relative w-24 h-24">
                                 <Image
                                   src={
@@ -482,9 +500,6 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                         {/* Newly added local images */}
                         {ep.images.map((file, i) => (
                           <div key={`file-${i}`} className="relative w-24 h-24">
-                            <p className="text-[10px] text-gray-500 mb-1">
-                              Preview:
-                            </p>
                             <div className="relative w-24 h-24">
                               <Image
                                 src={URL.createObjectURL(file)}
