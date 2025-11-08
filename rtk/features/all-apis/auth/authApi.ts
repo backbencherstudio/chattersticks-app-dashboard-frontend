@@ -1,23 +1,23 @@
-import baseApi from '@/rtk/features/baseApi';
+import baseApi from "@/rtk/features/baseApi";
 
 // Define the auth API endpoints
 const authApi = baseApi.injectEndpoints({
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     // LOGIN
     login: builder.mutation({
-      query: body => ({
-        url: '/auth/login',
-        method: 'POST',
+      query: (body) => ({
+        url: "/auth/login",
+        method: "POST",
         body,
       }),
-      invalidatesTags: ['user'],
+      invalidatesTags: ["user"],
     }),
 
     // FORGOT PASSWORD - send OTP or reset link
     forgotPassword: builder.mutation({
       query: (email: string) => ({
-        url: '/auth/forgot-password',
-        method: 'POST',
+        url: "/auth/forgot-password",
+        method: "POST",
         body: { email },
       }),
     }),
@@ -25,8 +25,8 @@ const authApi = baseApi.injectEndpoints({
     // VERIFY OTP
     verifyOtp: builder.mutation({
       query: ({ email, otp }: { email: string; otp: string }) => ({
-        url: '/auth/verify-otp',
-        method: 'POST',
+        url: "/auth/verify-otp",
+        method: "POST",
         body: { email, otp },
       }),
     }),
@@ -42,9 +42,17 @@ const authApi = baseApi.injectEndpoints({
         password: string;
         token: string;
       }) => ({
-        url: '/auth/reset-password',
-        method: 'POST',
+        url: "/auth/reset-password",
+        method: "POST",
         body: { email, newPassword: password, token },
+      }),
+    }),
+
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: "/auth/change-password",
+        method: "POST",
+        body: data,
       }),
     }),
   }),
@@ -56,4 +64,5 @@ export const {
   useForgotPasswordMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
+  useChangePasswordMutation,
 } = authApi;
