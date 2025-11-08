@@ -7,23 +7,28 @@ import { UsersIdeaModal } from './UsersIdeaModal';
 import ReactMarkdown from 'react-markdown';
 import { useGetAllIdeasQuery } from '@/rtk/features/all-apis/idea-management/ideaManagement';
 
-
 interface User {
   username: string;
+  id: string;
   photo: string;
-  email: string;
-  ideas: string;
-  userId: number;
+  useremail: string;
+  description: string;
+  approval_status?: string;
+  userId?: number;
 }
 
 export default function UsersIdeaTable() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
 
-  // ✅ Fetch data using RTK Query
-  const { data: users, isLoading, isError } = useGetAllIdeasQuery('');
+  const { data: usersResponse, isLoading, isError } = useGetAllIdeasQuery('');
 
-  // ✅ Open modal with selected user
+  // ✅ Safely handle data shape
+  const users: User[] = Array.isArray(usersResponse)
+    ? usersResponse
+    : usersResponse?.data ?? [];
+  console.log(usersResponse)
+
   function handleView(user: User) {
     setSelectedUser(user);
     setOpen(true);
@@ -31,6 +36,7 @@ export default function UsersIdeaTable() {
 
   if (isLoading) return <p>Loading users...</p>;
   if (isError) return <p>Error fetching users.</p>;
+  if (!Array.isArray(users)) return <p>No users found.</p>;
 
   return (
     <div className="w-full p-4 font-[inter]">
@@ -49,7 +55,7 @@ export default function UsersIdeaTable() {
               </tr>
             </thead>
             <tbody>
-              {users?.map((user: User, i: number) => (
+              {users.map((user: User, i: number) => (
                 <tr key={i} className="border-b hover:bg-gray-50">
                   <td className="py-3 px-4">{user.username}</td>
                   <td className="py-3 px-4">
@@ -61,13 +67,13 @@ export default function UsersIdeaTable() {
                       className="rounded-full object-cover"
                     />
                   </td>
-                  <td className="py-3 px-4">{user.email}</td>
+                  <td className="py-3 px-4">{user.useremail}</td>
                   <td className="py-3 px-4">
                     <div className="max-w-md">
                       <ReactMarkdown>
-                        {user.ideas.length > 60
-                          ? user.ideas.substring(0, 60) + '...'
-                          : user.ideas}
+                        {user.description?.length > 60
+                          ? user.description.substring(0, 60) + '...'
+                          : user.description}
                       </ReactMarkdown>
                     </div>
                   </td>
@@ -87,7 +93,6 @@ export default function UsersIdeaTable() {
         </CardContent>
       </Card>
 
-      {/* ✅ Reusable Modal Component */}
       <UsersIdeaModal
         open={open}
         onClose={() => setOpen(false)}

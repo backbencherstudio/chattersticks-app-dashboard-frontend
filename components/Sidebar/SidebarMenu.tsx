@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import UserManagementIconAC from '@/components/CustomIcon/Sidebar/ActiveIcon/UserManagementIconAC';
 
 
-import SettingsIconAc from '@/components/CustomIcon/Sidebar/ActiveIcon/SettingsIconAc';
+
 import IdeaManagementIcon from '@/components/CustomIcon/Sidebar/DeactiveIcon/IdeaManagementIcon';
 import IdeaManagementIconAc from '@/components/CustomIcon/Sidebar/ActiveIcon/IdeaManagementIconAc';
 
@@ -96,7 +96,7 @@ const NavLink: React.FC<NavLinkProps> = ({
           handleLinkClick();
         }}
         className={`
-          w-full flex items-center text-[15px] cursor-pointer font-[600]
+          w-full flex items-center text-[15px] cursor-pointer font-semibold
           ${isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'}
           p-3 rounded-lg text-[#4A4C56] hover:bg-gray-100
           ${
@@ -118,7 +118,7 @@ const NavLink: React.FC<NavLinkProps> = ({
             ${
               isCollapsed
                 ? 'opacity-0 max-w-0 ml-0'
-                : 'opacity-100 max-w-[160px] ml-2'
+                : 'opacity-100 max-w-40 ml-2'
             }
             ${isActive ? 'font-medium' : ''}
             overflow-hidden whitespace-nowrap align-middle inline-block
@@ -157,7 +157,7 @@ const NavLink: React.FC<NavLinkProps> = ({
           ${
             isCollapsed
               ? 'opacity-0 max-w-0 ml-0'
-              : 'opacity-100 max-w-[160px] ml-2'
+              : 'opacity-100 max-w-40 ml-2'
           }
           ${isActive ? 'font-medium' : ''}
           overflow-hidden whitespace-nowrap align-middle inline-block

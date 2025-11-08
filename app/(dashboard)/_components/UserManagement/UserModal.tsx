@@ -6,9 +6,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
+  
   DialogOverlay,
-  DialogClose,
+ 
 } from '@/components/ui/dialog';
 import { Heart, Mail, Smartphone, User, Loader2 } from 'lucide-react';
 import { useGetUserByIdQuery } from '@/rtk/features/all-apis/user-management/userManagement';
@@ -27,6 +27,8 @@ export const UserModal: React.FC<UserModalProps> = ({
   const { data, isLoading, isError } = useGetUserByIdQuery(userId || '', {
     skip: !userId,
   });
+
+  console.log('userData:', data);
 
   const user = data?.data || [];
   console.log(user._count);

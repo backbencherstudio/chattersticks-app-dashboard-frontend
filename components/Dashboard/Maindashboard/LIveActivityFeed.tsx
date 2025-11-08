@@ -33,16 +33,21 @@ export default function LiveActivityFeed({
   const [activities, setActivities] = useState<ActivityItem[]>([]);
 
   useEffect(() => {
-    if (activity?.length) {
+    if (!activity) return;
+
+    setActivities(prev => {
+      const prevString = JSON.stringify(prev);
+      const newString = JSON.stringify(activity);
+      if (prevString === newString) return prev; // no change → skip update
+
       const sorted = [...activity].sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
-      setActivities(sorted);
-    } else {
-      setActivities([]);
-    }
+      return sorted;
+    });
   }, [activity]);
+
 
   return (
     <div className="bg-blue-50/40 border border-blue-100 shadow-sm md:p-4 p-2 rounded-xl md:space-y-4 space-y-3">
