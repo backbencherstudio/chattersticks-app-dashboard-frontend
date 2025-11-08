@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import Pagination from "@/components/Shared/Pagination";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,36 +17,43 @@ import {
 import AddComicModal from "./ComicModal";
 import EditComic from "./EditComic";
 
-interface Comic {
-  id: number;
-  title: string;
-  author: string;
-  episodes: number;
-  downloads: number;
-  status: string;
-}
 type SortOrder = "asc" | "desc" | null;
 
 export default function ComicContentManagement() {
-  const [comics, setComics] = useState<Comic[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedComicId, setSelectedComicId] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useGetAllComicsQuery("");
+  const { data, isLoading, refetch } = useGetAllComicsQuery({
+    page: currentPage,
+    perPage: 10,
+  });
+
   const [deleteComic] = useDeleteComicMutation();
 
-  // ✅ Filter comics by title based on search term
-  const filteredComics = comics.filter((comic) =>
+  const pagination = data?.pagination;
+
+  console.log(pagination);
+
+  const allComics = data?.data ?? [];
+
+  // ✅ Filter comics by title
+  const filteredComics = allComics.filter((comic: any) =>
     comic.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   if (isLoading) {
-    return <p>Loading.......</p>;
+    return <p className="text-center text-gray-600">Loading comics...</p>;
   }
 
+  // ✅ Sorting handler
   function handleSort() {
     let newOrder: SortOrder;
     if (sortOrder === "asc") {
@@ -54,18 +63,19 @@ export default function ComicContentManagement() {
     }
     setSortOrder(newOrder);
 
-    const sorted = [...comics].sort((a, b) => {
+    const sorted = [...filteredComics].sort((a, b) => {
       if (newOrder === "asc") {
-        return a.downloads - b.downloads;
+        return a.download_count - b.download_count;
       } else {
-        return b.downloads - a.downloads;
+        return b.download_count - a.download_count;
       }
     });
-    setComics(sorted);
+    // just for UI re-render
+    data.data = sorted;
   }
 
   // ✅ Delete comic by id
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       const response = await deleteComic(id);
       if (response?.data?.success) {
@@ -73,14 +83,16 @@ export default function ComicContentManagement() {
         refetch();
       }
     } catch (error: any) {
-      toast.error(error);
+      toast.error("Failed to delete comic.");
     }
   };
 
   return (
     <div className="p-2 sm:p-4 font-[inter]">
       <h2 className="text-lg font-semibold mb-4">Comic Content Management</h2>
+
       <Card className="p-2 sm:p-4">
+        {/* Top controls */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
           <h3 className="font-medium">All Comics</h3>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -92,7 +104,7 @@ export default function ComicContentManagement() {
             />
             <Button
               onClick={() => setOpenModal(true)}
-              className="bg-green-600 hover:bg-green-600 cursor-pointer whitespace-nowrap"
+              className="bg-green-600 hover:bg-green-700 text-white cursor-pointer whitespace-nowrap"
             >
               Add New Comic
             </Button>
@@ -111,10 +123,9 @@ export default function ComicContentManagement() {
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead className="bg-blue-50">
-              <tr onClick={handleSort} className="cursor-pointer">
+              <tr className="cursor-pointer" onClick={handleSort}>
                 <th className="text-left p-2">
-                  Title / Author
-                  <SortIndicator order={sortOrder} />
+                  Title / Author <SortIndicator order={sortOrder} />
                 </th>
                 <th className="text-left p-2">Episodes</th>
                 <th className="text-left p-2">Downloads</th>
@@ -123,8 +134,8 @@ export default function ComicContentManagement() {
               </tr>
             </thead>
             <tbody>
-              {data?.data?.length > 0 ? (
-                data?.data?.map((comic: any) => (
+              {filteredComics.length > 0 ? (
+                filteredComics.map((comic: any) => (
                   <tr
                     key={comic.id}
                     className="border-b hover:bg-gray-50 transition-colors"
@@ -140,9 +151,9 @@ export default function ComicContentManagement() {
                     <td className="p-2">
                       <span
                         className={`${
-                          comic.status === "Published"
+                          comic.status === "PUBLISHED"
                             ? "text-green-600"
-                            : comic.status === "Draft"
+                            : comic.status === "DRAFT"
                             ? "text-yellow-500"
                             : "text-red-500"
                         }`}
@@ -154,29 +165,29 @@ export default function ComicContentManagement() {
                       <Button
                         size="icon"
                         variant="outline"
-                        className="cursor-pointer"
                         onClick={() =>
-                          redirect(`/comic-management/${comic?.id}`)
+                          redirect(`/comic-management/${comic.id}`)
                         }
+                        className="cursor-pointer"
                       >
                         <Eye className="w-4 h-4 text-green-600" />
                       </Button>
                       <Button
                         size="icon"
                         variant="outline"
-                        className="cursor-pointer"
                         onClick={() => {
                           setOpenEditModal(true);
                           setSelectedComicId(comic.id);
                         }}
+                        className="cursor-pointer"
                       >
                         <Pencil className="w-4 h-4 text-yellow-600" />
                       </Button>
                       <Button
                         size="icon"
                         variant="outline"
-                        className="cursor-pointer"
                         onClick={() => handleDelete(comic.id)}
+                        className="cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </Button>
@@ -185,10 +196,11 @@ export default function ComicContentManagement() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="text-center p-4 text-gray-500">
-                    {searchTerm
-                      ? `No comics found matching "${searchTerm}"`
-                      : "Loading comics..."}
+                  <td
+                    colSpan={5}
+                    className="text-center p-4 text-gray-500 italic"
+                  >
+                    No comics found.
                   </td>
                 </tr>
               )}
@@ -199,7 +211,7 @@ export default function ComicContentManagement() {
         {/* Mobile Card View */}
         <div className="md:hidden space-y-3">
           {filteredComics.length > 0 ? (
-            filteredComics.map((comic) => (
+            filteredComics.map((comic: any) => (
               <div
                 key={comic.id}
                 className="border rounded-lg p-3 bg-white hover:bg-gray-50 transition-colors"
@@ -213,9 +225,9 @@ export default function ComicContentManagement() {
                   </div>
                   <span
                     className={`text-xs px-2 py-1 rounded ${
-                      comic.status === "Published"
+                      comic.status === "PUBLISHED"
                         ? "text-green-600 bg-green-50"
-                        : comic.status === "Draft"
+                        : comic.status === "DRAFT"
                         ? "text-yellow-600 bg-yellow-50"
                         : "text-red-600 bg-red-50"
                     }`}
@@ -224,17 +236,17 @@ export default function ComicContentManagement() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-xs text-gray-600 mb-3">
-                  <span>{comic.episodes} episodes</span>
-                  <span>{comic.downloads.toLocaleString()} downloads</span>
+                  <span>{comic._count?.episodes} episodes</span>
+                  <span>{comic.download_count} downloads</span>
                 </div>
                 <div className="flex justify-end gap-2 text-[8px]">
                   <Button size="sm" variant="outline">
-                    <Eye className="w-3 h-3 text-green-600 " />
+                    <Eye className="w-3 h-3 text-green-600" />
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setOpenModal(true)}
+                    onClick={() => setOpenEditModal(true)}
                   >
                     <Pencil className="w-3 h-3 text-yellow-600 mr-1" />
                   </Button>
@@ -250,9 +262,7 @@ export default function ComicContentManagement() {
             ))
           ) : (
             <div className="text-center p-8 text-gray-500 border rounded-lg">
-              {searchTerm
-                ? `No comics found matching "${searchTerm}"`
-                : "Loading comics..."}
+              No comics found.
             </div>
           )}
         </div>
@@ -268,21 +278,30 @@ export default function ComicContentManagement() {
         />
       )}
 
-      {/* ✅ Edit Comic Modal */}
-      {openEditModal && (
+      {/* Edit Comic Modal */}
+      {openEditModal && selectedComicId && (
         <EditComic
-          comicId={selectedComicId!}
+          comicId={selectedComicId}
           onClose={() => {
             setOpenEditModal(false);
             refetch();
           }}
         />
       )}
+
+      <Pagination
+        currentPage={pagination.page}
+        totalPages={pagination.totalPages}
+        onPageChange={(page) => {
+          setCurrentPage(page);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      />
     </div>
   );
 }
 
-// Sort indicator component
+// Sort indicator helper
 const SortIndicator: React.FC<{ order: SortOrder }> = ({ order }) => {
   if (order === "asc") return <span className="ml-2">▲</span>;
   if (order === "desc") return <span className="ml-2">▼</span>;
