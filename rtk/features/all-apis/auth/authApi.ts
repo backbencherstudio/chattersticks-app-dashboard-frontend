@@ -55,6 +55,25 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+
+    updateProfile: builder.mutation({
+      query: (formData) => {
+        return {
+          url: "/auth/update",
+          method: "PATCH",
+          body: formData,
+        };
+      },
+    }),
+
+    getMe: builder.query({
+      query: () => {
+        return {
+          url: "/auth/me",
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
@@ -65,4 +84,6 @@ export const {
   useVerifyOtpMutation,
   useResetPasswordMutation,
   useChangePasswordMutation,
+  useUpdateProfileMutation,
+  useGetMeQuery,
 } = authApi;
