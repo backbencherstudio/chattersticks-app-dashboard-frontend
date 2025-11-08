@@ -4,8 +4,11 @@ import React from 'react';
 import Image from 'next/image';
 import { HiMenuAlt3 } from 'react-icons/hi';
 
-interface NavbarProps {
+
+export interface NavbarProps {
+  isMobileMenuOpen: boolean;
   onMobileMenuToggle: () => void;
+  notificationCount: number;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {

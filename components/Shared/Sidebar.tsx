@@ -9,16 +9,18 @@ import { Settings } from 'lucide-react';
 import { destroyCookie } from 'nookies';
 import { useSettingsModal } from '@/context/SettingsModalContext';
 
-export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
+interface SidebarProps {
+  isMobileMenuOpen: boolean;
+  onMobileMenuClose: () => void;
+}
+
+export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }: SidebarProps) {
   const router = useRouter();
   const { openSettingsModal } = useSettingsModal();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed] = useState(false);
   const [isSettingsLoading, setIsSettingsLoading] = useState(false);
   const [isLogoutLoading, setIsLogoutLoading] = useState(false);
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
 
   const handleLogout = () => {
     setIsLogoutLoading(true);
@@ -55,7 +57,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
               className={`transition-all duration-300 ease-in-out inline-block align-middle ${
                 isCollapsed
                   ? 'opacity-0 max-w-0 ml-0'
-                  : 'opacity-100 max-w-[160px] ml-2'
+                  : 'opacity-100 max-w-40 ml-2'
               } overflow-hidden whitespace-nowrap`}
             >
               <Image
@@ -88,7 +90,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
       </div>
 
       {/* Bottom Navigation */}
-      <nav className={`p-1 ${isCollapsed ? 'px-2' : ''} flex-shrink-0`}>
+      <nav className={`p-1 ${isCollapsed ? 'px-2' : ''} shrink-0`}>
         {/* Settings Button */}
         <div className="pt-2">
           <button
@@ -97,7 +99,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
               handleSettings();
               if (window.innerWidth < 768) onMobileMenuClose();
             }}
-            className={`w-full flex items-center text-[15px] cursor-pointer font-[600] transition-all duration-200 ${
+            className={`w-full flex items-center text-[15px] cursor-pointer font-semibold transition-all duration-200 ${
               isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'
             } p-3 rounded-lg text-[#4A4C56] hover:bg-gray-100`}
             title={isCollapsed ? 'Settings' : ''}
@@ -107,7 +109,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
               className={`${
                 isCollapsed
                   ? 'opacity-0 max-w-0'
-                  : 'opacity-100 max-w-[160px] ml-2'
+                  : 'opacity-100 max-w-40 ml-2'
               } overflow-hidden`}
             >
               {isSettingsLoading ? 'Opening...' : 'Settings'}
@@ -123,7 +125,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
               handleLogout();
               if (window.innerWidth < 768) onMobileMenuClose();
             }}
-            className={`w-full flex items-center text-[15px] cursor-pointer font-[600] transition-all duration-200 ${
+            className={`w-full flex items-center text-[15px] cursor-pointer font-semibold transition-all duration-200 ${
               isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'
             } p-3 rounded-lg text-[#4A4C56] hover:bg-gray-100`}
             title={isCollapsed ? 'Logout' : ''}
@@ -134,7 +136,7 @@ export default function Sidebar({ isMobileMenuOpen, onMobileMenuClose }) {
               className={`transition-all duration-300 ease-in-out ${
                 isCollapsed
                   ? 'opacity-0 max-w-0 ml-0'
-                  : 'opacity-100 max-w-[160px] ml-2'
+                  : 'opacity-100 max-w-40 ml-2'
               } overflow-hidden whitespace-nowrap align-middle inline-block`}
             >
               {isLogoutLoading ? 'Logging out...' : 'Logout'}

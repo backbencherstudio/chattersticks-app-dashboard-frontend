@@ -8,6 +8,17 @@ import { useGetAllUsersQuery } from '@/rtk/features/all-apis/user-management/use
 
 type SortOrder = 'asc' | 'desc' | null;
 
+type User = {
+  id: string;
+  userName: string;
+  Photos?: string;
+  Email: string;
+  Joindate?: string;
+  lastActive?: string;
+  joinedDate?: string;
+  created_at?: string;
+};
+
 export default function UserTable() {
   const [sortOrder, setSortOrder] = useState<SortOrder>(null);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -92,23 +103,24 @@ export default function UserTable() {
                     onClick={handleSort}
                     className="bg-gray-200/50 cursor-pointer select-none"
                   >
-                    <th className="py-3 px-4">
-                      Username <SortIndicator order={sortOrder} />
-                    </th>
+                    <th className="py-3 px-4">Username</th>
                     <th className="py-3 px-4">Photo</th>
                     <th className="py-3 px-4">Email</th>
-                    <th className="py-3 px-4">Joined Date</th>
+                    <th className="py-3 px-4 flex items-center">
+                      Join Date
+                      <SortIndicator order={sortOrder} />
+                    </th>
                     <th className="py-3 px-4">Last Active</th>
-                    <th className="py-3 px-4 text-center">Action</th>
+                    <th className="py-3 px-4 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedUsers.map((user: any, i: number) => (
+                  {sortedUsers.map((user: User, i: number) => (
                     <tr key={i} className="border-b hover:bg-gray-50">
                       <td className="py-3 px-4">{user.userName}</td>
                       <td className="py-3 px-4">
                         <Image
-                          src={user.Photos}
+                          src={user?.Photos || '/images/profile.png'}
                           alt="profile"
                           width={38}
                           height={38}

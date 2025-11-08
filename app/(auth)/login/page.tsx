@@ -4,8 +4,9 @@ import LoginForm from '@/components/LoginForm';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-const LoginPage = () => {
-  const token = cookies().get('access_token')?.value;
+const LoginPage = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('access_token')?.value;
 
   if (token) {
     redirect('/dashboard');
