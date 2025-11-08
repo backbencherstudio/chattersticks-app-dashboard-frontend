@@ -1,10 +1,12 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { Eye } from 'lucide-react';
 import { UsersIdeaModal } from './UsersIdeaModal';
 import ReactMarkdown from 'react-markdown';
+import { useGetAllIdeasQuery } from '@/rtk/features/all-apis/idea-management/ideaManagement';
+
 
 interface User {
   username: string;
@@ -14,19 +16,12 @@ interface User {
   userId: number;
 }
 
-
-
 export default function UsersIdeaTable() {
-  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    fetch('/data/usersIdea.json')
-      .then(res => res.json())
-      .then((data: User[]) => setUsers(data))
-      .catch(error => console.error('Error loading users:', error));
-  }, []);
+  // ✅ Fetch data using RTK Query
+  const { data: users, isLoading, isError } = useGetAllIdeasQuery('');
 
   // ✅ Open modal with selected user
   function handleView(user: User) {
@@ -34,12 +29,15 @@ export default function UsersIdeaTable() {
     setOpen(true);
   }
 
+  if (isLoading) return <p>Loading users...</p>;
+  if (isError) return <p>Error fetching users.</p>;
+
   return (
     <div className="w-full p-4 font-[inter]">
       <h2 className="text-xl font-semibold mb-4">User Management</h2>
       <Card className="shadow-sm rounded-xl">
         <CardContent className="p-0 overflow-x-auto">
-          <h2 className="pl-5 py-2 font-bold">All User</h2>
+          <h2 className="pl-5 py-2 font-bold">All Users</h2>
           <table className="w-full text-left text-sm min-w-[800px]">
             <thead className="bg-gray-100 text-gray-700 border-b">
               <tr className="bg-gray-200/50 cursor-pointer select-none">
@@ -51,12 +49,12 @@ export default function UsersIdeaTable() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user, i) => (
+              {users?.map((user: User, i: number) => (
                 <tr key={i} className="border-b hover:bg-gray-50">
                   <td className="py-3 px-4">{user.username}</td>
                   <td className="py-3 px-4">
                     <Image
-                      src={user.photo}
+                      src={user.photo || '/default-profile.png'}
                       alt="profile"
                       width={38}
                       height={38}
@@ -98,5 +96,3 @@ export default function UsersIdeaTable() {
     </div>
   );
 }
-
-
