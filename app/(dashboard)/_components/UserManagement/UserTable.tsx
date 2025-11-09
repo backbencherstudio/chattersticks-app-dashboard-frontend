@@ -35,7 +35,6 @@ export default function UserTable() {
   });
 
   // Debug: Log the API response
-  console.log("API Response:", data);
 
   // Adjust this depending on your API response shape
   const usersData = data?.data?.users || data?.data || data?.users || [];
@@ -53,10 +52,6 @@ export default function UserTable() {
         0) / perPage
     ) ||
     1;
-
-  console.log("Users Data:", usersData);
-  console.log("Total Pages:", totalPages);
-  console.log("Current Page:", currentPage);
 
   // Optional: sort client-side
   const sortedUsers = [...usersData].sort((a, b) => {

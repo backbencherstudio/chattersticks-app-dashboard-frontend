@@ -1,17 +1,15 @@
-'use client';
+"use client";
 
-import * as React from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  
   DialogOverlay,
- 
-} from '@/components/ui/dialog';
-import { Heart, Mail, Smartphone, User, Loader2 } from 'lucide-react';
-import { useGetUserByIdQuery } from '@/rtk/features/all-apis/user-management/userManagement';
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useGetUserByIdQuery } from "@/rtk/features/all-apis/user-management/userManagement";
+import { Heart, Loader2, Mail, Smartphone, User } from "lucide-react";
+import * as React from "react";
 
 interface UserModalProps {
   open: boolean;
@@ -24,16 +22,14 @@ export const UserModal: React.FC<UserModalProps> = ({
   onClose,
   userId,
 }) => {
-  const { data, isLoading, isError } = useGetUserByIdQuery(userId || '', {
+  const { data, isLoading, isError } = useGetUserByIdQuery(userId || "", {
     skip: !userId,
   });
 
-  console.log('userData:', data);
-
   const user = data?.data || [];
-  console.log(user._count);
+
   const formatDate = (dateStr?: string) =>
-    dateStr ? new Date(dateStr).toLocaleDateString() : 'N/A';
+    dateStr ? new Date(dateStr).toLocaleDateString() : "N/A";
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -43,9 +39,9 @@ export const UserModal: React.FC<UserModalProps> = ({
         <DialogHeader className="flex relative border-b pb-3 mb-4">
           <DialogTitle className="text-md font-bold">
             {isLoading
-              ? 'Loading user...'
+              ? "Loading user..."
               : isError
-              ? 'Error Loading User'
+              ? "Error Loading User"
               : `User Profile: `}
           </DialogTitle>
         </DialogHeader>
@@ -78,7 +74,7 @@ export const UserModal: React.FC<UserModalProps> = ({
                 <span className="font-medium flex items-center gap-2">
                   <Mail size={16} /> Email
                 </span>
-                <span className="font-bold ml-1">{user.email || 'N/A'}</span>
+                <span className="font-bold ml-1">{user.email || "N/A"}</span>
               </div>
             </div>
 

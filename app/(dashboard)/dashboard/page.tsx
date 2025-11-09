@@ -7,7 +7,7 @@ import { useGetDashboardComicsQuery } from "@/rtk/features/all-apis/comics/comic
 
 const DashboardPage = () => {
   const { data } = useGetDashboardComicsQuery("");
-  console.log(data?.activityFeed);
+
   return (
     <div>
       <div className="space-y-6">
