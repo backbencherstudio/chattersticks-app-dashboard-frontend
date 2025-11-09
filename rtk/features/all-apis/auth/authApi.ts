@@ -12,7 +12,14 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
-
+    //Admin Profile
+    admin: builder.query({
+      query: () => ({
+        url: '/auth/me',
+        method: 'GET',
+      }),
+      providesTags: ['admin'],
+    }),
     // FORGOT PASSWORD - send OTP or reset link
     forgotPassword: builder.mutation({
       query: (email: string) => ({
@@ -83,7 +90,5 @@ export const {
   useForgotPasswordMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
-  useChangePasswordMutation,
-  useUpdateProfileMutation,
-  useGetMeQuery,
+  useAdminQuery,
 } = authApi;

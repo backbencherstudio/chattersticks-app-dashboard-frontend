@@ -1,4 +1,4 @@
-const { default: baseApi } = require('../../baseApi');
+import baseApi from '@/rtk/features/baseApi';
 
 const dashboardApi = baseApi.injectEndpoints({
   endpoints: builder => ({
@@ -8,4 +8,4 @@ const dashboardApi = baseApi.injectEndpoints({
     }),
   }),
 });
-export const {useGetAllDashboardQuery}= dashboardApi
+export const { useGetAllDashboardQuery } = dashboardApi;

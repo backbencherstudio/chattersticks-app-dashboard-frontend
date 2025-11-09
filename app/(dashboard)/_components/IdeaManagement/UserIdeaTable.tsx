@@ -1,11 +1,12 @@
-"use client";
-import { Card, CardContent } from "@/components/ui/card";
-import { useGetAllIdeasQuery } from "@/rtk/features/all-apis/idea-management/ideaManagement";
-import { Eye } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { UsersIdeaModal } from "./UsersIdeaModal";
+'use client';
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import Image from 'next/image';
+import { Eye } from 'lucide-react';
+import { UsersIdeaModal } from './UsersIdeaModal';
+import ReactMarkdown from 'react-markdown';
+import { useGetAllIdeasQuery } from '@/rtk/features/all-apis/idea-management/ideaManagement';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface User {
   username: string;
@@ -27,13 +28,23 @@ export default function UsersIdeaTable() {
   const users: User[] = Array.isArray(usersResponse)
     ? usersResponse
     : usersResponse?.data ?? [];
+  
 
   function handleView(user: User) {
     setSelectedUser(user);
     setOpen(true);
   }
 
-  if (isLoading) return <p>Loading users...</p>;
+   if (isLoading)
+     return (
+       <div className="flex items-center space-x-4">
+         <Skeleton className="h-12 w-12 rounded-full" />
+         <div className="space-y-2">
+           <Skeleton className="h-4 w-[250px]" />
+           <Skeleton className="h-4 w-[200px]" />
+         </div>
+       </div>
+     );
   if (isError) return <p>Error fetching users.</p>;
   if (!Array.isArray(users)) return <p>No users found.</p>;
 
