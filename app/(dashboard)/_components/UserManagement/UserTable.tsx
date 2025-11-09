@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Eye } from 'lucide-react';
 import { UserModal } from './UserModal';
 import { useGetAllUsersQuery } from '@/rtk/features/all-apis/user-management/userManagement';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type SortOrder = 'asc' | 'desc' | null;
 
@@ -82,19 +83,15 @@ export default function UserTable() {
       <Card className="shadow-sm rounded-xl">
         <CardContent className="p-0 overflow-x-auto">
           <h2 className="pl-5 py-2 font-bold">All Users</h2>
-
-          {isLoading && (
-            <div className="text-center py-8 text-gray-500">
-              Loading users...
+          if (isLoading) return (
+          <div className="flex items-center space-x-4">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
             </div>
-          )}
-
-          {isError && (
-            <div className="text-center py-8 text-red-500">
-              Failed to load users. Please try again.
-            </div>
-          )}
-
+          </div>
+          ); if (isError) return <p>Error loading dashboard data.</p>;
           {!isLoading && !isError && usersData.length > 0 && (
             <>
               <table className="w-full text-left text-sm min-w-[800px]">
@@ -177,7 +174,6 @@ export default function UserTable() {
               </div>
             </>
           )}
-
           {!isLoading && !isError && usersData.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               No users found.
