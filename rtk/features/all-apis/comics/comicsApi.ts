@@ -10,12 +10,13 @@ const ComicApi = baseApi.injectEndpoints({
       }),
     }),
     getAllComics: builder.query({
-      query: (params) => ({
+      query: (params = {}) => ({
         url: "/admin/comic",
         method: "GET",
-        params: params,
+        params,
       }),
     }),
+
     getDashboardComics: builder.query({
       query: () => ({
         url: "/admin/comic/dashboard",

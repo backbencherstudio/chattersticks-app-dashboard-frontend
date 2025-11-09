@@ -7,7 +7,7 @@ import { UserModal } from './UserModal';
 import { useGetAllUsersQuery } from '@/rtk/features/all-apis/user-management/userManagement';
 import { Skeleton } from '@/components/ui/skeleton';
 
-type SortOrder = 'asc' | 'desc' | null;
+type SortOrder = "asc" | "desc" | null;
 
 type User = {
   id: string;
@@ -36,7 +36,6 @@ export default function UserTable() {
   });
 
   // Debug: Log the API response
-  console.log('API Response:', data);
 
   // Adjust this depending on your API response shape
   const usersData = data?.data?.users || data?.data || data?.users || [];
@@ -55,14 +54,10 @@ export default function UserTable() {
     ) ||
     1;
 
-  console.log('Users Data:', usersData);
-  console.log('Total Pages:', totalPages);
-  console.log('Current Page:', currentPage);
-
   // Optional: sort client-side
   const sortedUsers = [...usersData].sort((a, b) => {
     if (!sortOrder) return 0;
-    return sortOrder === 'asc'
+    return sortOrder === "asc"
       ? new Date(a.joinedDate || a.created_at).getTime() -
           new Date(b.joinedDate || b.created_at).getTime()
       : new Date(b.joinedDate || b.created_at).getTime() -
@@ -70,7 +65,7 @@ export default function UserTable() {
   });
 
   const handleSort = () =>
-    setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
 
   const handleView = (userId: string) => {
     setSelectedUser(userId);
@@ -117,7 +112,7 @@ export default function UserTable() {
                       <td className="py-3 px-4">{user.userName}</td>
                       <td className="py-3 px-4">
                         <Image
-                          src={user?.Photos || '/images/profile.png'}
+                          src={user?.Photos || "/images/profile.png"}
                           alt="profile"
                           width={38}
                           height={38}
@@ -143,12 +138,14 @@ export default function UserTable() {
               {/* Pagination - Always show if data exists */}
               <div className="flex justify-center items-center gap-4 py-4 border-t">
                 <button
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
                   disabled={currentPage === 1}
                   className={`px-4 py-2 text-xs md:text-sm  rounded-md border ${
                     currentPage === 1
-                      ? 'opacity-50 cursor-not-allowed bg-gray-100'
-                      : 'hover:bg-gray-100 cursor-pointer'
+                      ? "opacity-50 cursor-not-allowed bg-gray-100"
+                      : "hover:bg-gray-100 cursor-pointer"
                   }`}
                 >
                   Previous
@@ -160,13 +157,13 @@ export default function UserTable() {
 
                 <button
                   onClick={() =>
-                    setCurrentPage(prev => Math.min(totalPages, prev + 1))
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                   }
                   disabled={currentPage === totalPages}
                   className={`px-4 text-xs md:text-sm py-2 rounded-md border ${
                     currentPage === totalPages
-                      ? 'opacity-50 cursor-not-allowed bg-gray-100'
-                      : 'hover:bg-gray-100 cursor-pointer'
+                      ? "opacity-50 cursor-not-allowed bg-gray-100"
+                      : "hover:bg-gray-100 cursor-pointer"
                   }`}
                 >
                   Next
@@ -192,7 +189,7 @@ export default function UserTable() {
 }
 
 const SortIndicator: React.FC<{ order: SortOrder }> = ({ order }) => {
-  if (order === 'asc') return <span className="ml-2">▲</span>;
-  if (order === 'desc') return <span className="ml-2">▼</span>;
+  if (order === "asc") return <span className="ml-2">▲</span>;
+  if (order === "desc") return <span className="ml-2">▼</span>;
   return null;
 };

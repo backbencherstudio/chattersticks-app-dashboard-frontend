@@ -22,7 +22,7 @@ export default function UsersIdeaTable() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
 
-  const { data: usersResponse, isLoading, isError } = useGetAllIdeasQuery('');
+  const { data: usersResponse, isLoading, isError } = useGetAllIdeasQuery("");
 
   // ✅ Safely handle data shape
   const users: User[] = Array.isArray(usersResponse)
@@ -70,7 +70,7 @@ export default function UsersIdeaTable() {
                   <td className="py-3 px-4">{user.username}</td>
                   <td className="py-3 px-4">
                     <Image
-                      src={user.photo || '/default-profile.png'}
+                      src={user.photo || "/default-profile.png"}
                       alt="profile"
                       width={38}
                       height={38}
@@ -82,7 +82,7 @@ export default function UsersIdeaTable() {
                     <div className="max-w-md">
                       <ReactMarkdown>
                         {user.description?.length > 60
-                          ? user.description.substring(0, 60) + '...'
+                          ? user.description.substring(0, 60) + "..."
                           : user.description}
                       </ReactMarkdown>
                     </div>

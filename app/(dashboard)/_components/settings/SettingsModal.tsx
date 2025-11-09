@@ -1,6 +1,14 @@
-'use client'
-import { useState, useEffect, useRef } from 'react';
-import { X, User } from 'lucide-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import {
+  useChangePasswordMutation,
+  useGetMeQuery,
+  useUpdateProfileMutation,
+} from "@/rtk/features/all-apis/auth/authApi";
+import { User, X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -8,44 +16,109 @@ interface SettingsModalProps {
 }
 
 function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
-  const [fullName, setFullName] = useState('Jane Doe');
-  const [email, setEmail] = useState('jane.doe@comic-admin.com');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
   const modalRef = useRef(null);
   const overlayRef = useRef(null);
   const contentRef = useRef(null);
 
-  const handleSaveProfile = () => {
-    alert('Profile Saved: ' + JSON.stringify({ fullName, email }));
+  //Query && Mutation
+  const [changePassword] = useChangePasswordMutation();
+  const [updateProfile] = useUpdateProfileMutation();
+  const { data, refetch } = useGetMeQuery("");
+
+  useEffect(() => {
+    if (data?.data) {
+      setFullName(data.data.name || "");
+      setEmail(data.data.email || "");
+      setImage(data.data.avatar_url || null);
+    }
+  }, [data]);
+
+  const [image, setImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
   };
 
-  const handleChangePassword = () => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setImage(URL.createObjectURL(selectedFile));
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("name", fullName);
+      if (file) {
+        formData.append("image", file);
+      }
+
+      const response = await updateProfile(formData);
+
+      if (response.data?.success) {
+        toast.success("Profile updated successfully!");
+        refetch();
+      } else {
+        toast.error(response?.data?.message || "Failed to update profile.");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Something went wrong!");
+    }
+  };
+
+  const handleChangePassword = async () => {
+    const payload = {
+      old_password: currentPassword,
+      new_password: newPassword,
+    };
+
     if (newPassword !== confirmPassword) {
-      alert('Passwords do not match!');
+      toast("Passwords do not match!");
       return;
     }
     if (newPassword.length < 6) {
-      alert('Password must be at least 6 characters!');
+      toast("Password must be at least 6 characters!");
       return;
     }
-    alert('Password Changed Successfully!');
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+
+    try {
+      const response = await changePassword(payload);
+
+      if (response?.data?.success) {
+        toast.success("Password updated successfully");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        onClose();
+      } else {
+        toast.error(response?.data?.message || "Failed to update password");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: any) {
+      toast.error("Something went wrong");
+    }
   };
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     }
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     };
   }, [isOpen]);
 
@@ -68,20 +141,45 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         <div className="p-4 sm:p-6 md:p-8">
           {/* Close Button */}
           <button
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-gray-600 transition-colors z-10 hover:rotate-90 transition-transform duration-300"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-gray-600 cursor-pointer"
             onClick={onClose}
           >
             <X size={20} className="sm:w-6 sm:h-6" />
           </button>
 
           <div ref={contentRef}>
-            {/* Profile Avatar */}
             <div className="flex justify-center mb-6">
               <div className="relative">
-                <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
-                  <User size={40} className="text-gray-600" />
+                {/* Image or Placeholder */}
+                <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden border">
+                  {image ? (
+                    <Image
+                      src={image}
+                      alt="Profile Preview"
+                      className="w-full h-full object-cover rounded-full"
+                      height={400}
+                      width={400}
+                    />
+                  ) : (
+                    <User size={40} className="text-gray-600" />
+                  )}
                 </div>
-                <button className="absolute bottom-0 right-0 w-7 h-7 bg-gray-700 rounded-full flex items-center justify-center text-white text-xs hover:bg-gray-800 transition-colors cursor-pointer">
+
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+
+                {/* Plus Button */}
+                <button
+                  type="button"
+                  onClick={handleButtonClick}
+                  className="absolute bottom-0 right-0 w-7 h-7 bg-gray-700 rounded-full flex items-center justify-center text-white text-xs hover:bg-gray-800 transition-colors cursor-pointer"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="14"
@@ -108,9 +206,9 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </label>
                   <input
                     value={fullName}
-                    onChange={e => setFullName(e.target.value)}
+                    onChange={(e) => setFullName(e.target.value)}
                     placeholder="Jane Doe"
-                    className="w-full bg-gray-200/20 border-none text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -119,16 +217,17 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </label>
                   <input
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    disabled // usually email is not editable
                     placeholder="jane.doe@comic-admin.com"
-                    className="w-full bg-gray-200/20 border-none text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg text-gray-500"
                   />
                 </div>
               </div>
+
               <div className="flex justify-end mt-4">
                 <button
                   onClick={handleSaveProfile}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all hover:scale-105 shadow-sm"
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all hover:scale-105 shadow-sm cursor-pointer"
                 >
                   Save Profile
                 </button>
@@ -151,9 +250,9 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <input
                     type="password"
                     value={currentPassword}
-                    onChange={e => setCurrentPassword(e.target.value)}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
                     placeholder="Enter current password"
-                    className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -164,9 +263,9 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <input
                       type="password"
                       value={newPassword}
-                      onChange={e => setNewPassword(e.target.value)}
+                      onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Enter new password"
-                      className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -176,16 +275,16 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <input
                       type="password"
                       value={confirmPassword}
-                      onChange={e => setConfirmPassword(e.target.value)}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm password"
-                      className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full bg-gray-50 border border-gray-200 text-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                 </div>
                 <div className="flex justify-end mt-4">
                   <button
                     onClick={handleChangePassword}
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all hover:scale-105 shadow-sm"
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all hover:scale-105 shadow-sm cursor-pointer"
                   >
                     Change Password
                   </button>
