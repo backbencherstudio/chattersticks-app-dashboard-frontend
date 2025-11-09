@@ -90,5 +90,7 @@ export const {
   useForgotPasswordMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
-  useAdminQuery,
+  useChangePasswordMutation,
+  useUpdateProfileMutation,
+  useGetMeQuery
 } = authApi;
