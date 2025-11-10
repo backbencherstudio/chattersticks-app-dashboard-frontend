@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1abd02be-3973-4fae-b4bb-c3c50586104f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(auth)/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/login/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/_components/IdeaManagement/UserIdeaTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/_components/IdeaManagement/UserIdeaTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/_components/IdeaManagement/UsersIdeaModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/_components/IdeaManagement/UsersIdeaModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/_components/UserManagement/UserModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/_components/UserManagement/UserModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/_components/UserManagement/UserTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/_components/UserManagement/UserTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Dashboard/Maindashboard/LIveActivityFeed.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Dashboard/Maindashboard/LIveActivityFeed.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Shared/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Shared/Sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Sidebar/SidebarMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Sidebar/SidebarMenu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rtk/features/all-apis/idea-management/ideaManagement.ts" beforeDir="false" afterPath="$PROJECT_DIR$/rtk/features/all-apis/idea-management/ideaManagement.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +74,7 @@
       <option name="presentableId" value="Default" />
       <updated>1762074939832</updated>
       <workItem from="1762074942247" duration="942000" />
-      <workItem from="1762593145035" duration="1198000" />
+      <workItem from="1762593145035" duration="2399000" />
     </task>
     <servers />
   </component>

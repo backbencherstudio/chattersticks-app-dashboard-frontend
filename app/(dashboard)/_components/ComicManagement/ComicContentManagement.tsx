@@ -16,6 +16,7 @@ import {
 } from "../../../../rtk/features/all-apis/comics/comicsApi";
 import AddComicModal from "./ComicModal";
 import EditComic from "./EditComic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type SortOrder = "asc" | "desc" | null;
 
@@ -27,10 +28,13 @@ export default function ComicContentManagement() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedComicId, setSelectedComicId] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useGetAllComicsQuery({
+
+
+  const { data, isLoading, refetch , isError } = useGetAllComicsQuery({
     page: currentPage,
     perPage: 10,
   });
+
 
   const [deleteComic] = useDeleteComicMutation();
 
@@ -43,9 +47,17 @@ export default function ComicContentManagement() {
     comic.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (isLoading) {
-    return <p className="text-center text-gray-600">Loading comics...</p>;
-  }
+  if (isLoading)
+    return (
+      <div className="flex items-center space-x-4">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      </div>
+    );
+  if (isError) return <p>Error loading dashboard data.</p>;
 
   // ✅ Sorting handler
   function handleSort() {

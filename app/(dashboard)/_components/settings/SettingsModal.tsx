@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import {
   useChangePasswordMutation,
+ 
   useGetMeQuery,
+ 
   useUpdateProfileMutation,
 } from "@/rtk/features/all-apis/auth/authApi";
 import { User, X } from "lucide-react";
@@ -31,6 +32,7 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [changePassword] = useChangePasswordMutation();
   const [updateProfile] = useUpdateProfileMutation();
   const { data, refetch } = useGetMeQuery("");
+  const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (data?.data) {
@@ -40,7 +42,6 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     }
   }, [data]);
 
-  const [image, setImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
@@ -104,9 +105,14 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       } else {
         toast.error(response?.data?.message || "Failed to update password");
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error: any) {
-      toast.error("Something went wrong");
+      
+    } catch (error: unknown) {
+      console.error(error);
+      if (error instanceof Error) {
+        toast.error(error.message || "Something went wrong");
+      } else {
+        toast.error("Something went wrong");
+      }
     }
   };
 
