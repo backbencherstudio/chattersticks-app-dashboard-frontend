@@ -38,9 +38,12 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [thumbnailRemoved, setThumbnailRemoved] = useState(false);
+  const [deletedImages, setDeletedImages] = useState<
+    { episode_id: string; image: string }[]
+  >([]);
 
   const [updateComic] = useUpdateComicMutation();
-  const { data } = useGetSingleComicQuery(comicId);
+  const { data, refetch } = useGetSingleComicQuery(comicId);
   const comic = data?.data;
 
   // Prefill the form with existing comic data
@@ -152,11 +155,16 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
         });
       });
 
+      if (deletedImages.length > 0) {
+        formData.append("deleted_images", JSON.stringify(deletedImages));
+      }
+
       const response = await updateComic({ id: comicId, data: formData });
 
       if (response?.data?.success) {
         toast.success("Comic updated successfully!");
         onClose();
+        refetch();
       } else {
         toast.error("Failed to update comic.");
       }
@@ -472,7 +480,23 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                                 />
                                 <button
                                   type="button"
-                                  onClick={() =>
+                                  onClick={() => {
+                                    // Extract the image name (last part of URL)
+                                    const imageUrl =
+                                      typeof imgUrl === "string" ? imgUrl : "";
+                                    const imageName =
+                                      imageUrl.split("/").pop() || "";
+
+                                    if (ep.id && imageName) {
+                                      setDeletedImages((prev) => [
+                                        ...prev,
+                                        {
+                                          episode_id: ep.id as string,
+                                          image: imageName,
+                                        },
+                                      ]);
+                                    }
+
                                     setEpisodes((prev) =>
                                       prev.map((episode) =>
                                         episode.id === ep.id
@@ -486,8 +510,8 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                                             }
                                           : episode
                                       )
-                                    )
-                                  }
+                                    );
+                                  }}
                                   className="absolute top-1 right-1 bg-white/80 hover:bg-red-100 text-red-600 rounded-full p-1 shadow cursor-pointer"
                                 >
                                   <X className="h-3 w-3" />
