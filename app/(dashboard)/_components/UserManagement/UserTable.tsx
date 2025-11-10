@@ -11,13 +11,14 @@ type SortOrder = "asc" | "desc" | null;
 
 type User = {
   id: string;
-  userName: string;
-  Photos?: string;
+  userName: string | null;
+  Photos?: string | null;
   Email: string;
   Joindate?: string;
   lastActive?: string;
   joinedDate?: string;
   created_at?: string;
+  device?: string | null;
 };
 
 export default function UserTable() {
@@ -35,58 +36,59 @@ export default function UserTable() {
     perPage,
   });
 
-  // Debug: Log the API response
+  if (isLoading)
+    return (
+      <div className="flex items-center space-x-4">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      </div>
+    );
+  if (isError) return <p>Error loading dashboard data.</p>;
 
-  // Adjust this depending on your API response shape
-  const usersData = data?.data?.users || data?.data || data?.users || [];
-  const totalPages =
-    data?.data?.meta?.totalPages ||
-    data?.data?.pagination?.totalPages ||
-    data?.meta?.totalPages ||
-    data?.pagination?.totalPages ||
-    data?.totalPages ||
-    Math.ceil(
-      (data?.data?.meta?.total ||
-        data?.data?.total ||
-        data?.meta?.total ||
-        data?.total ||
-        0) / perPage
-    ) ||
-    1;
+  // ✅ Extract users & pagination from API
+  const usersData: User[] = data?.data || [];
+  const pagination = data?.pagination || {};
+  const totalPages = pagination.totalPages || 1;
+  const hasNextPage = pagination.hasNextPage || false;
+  const hasPrevPage = pagination.hasPrevPage || false;
 
-  // Optional: sort client-side
+  // ✅ Sort users client-side by Join Date
   const sortedUsers = [...usersData].sort((a, b) => {
     if (!sortOrder) return 0;
-    return sortOrder === "asc"
-      ? new Date(a.joinedDate || a.created_at).getTime() -
-          new Date(b.joinedDate || b.created_at).getTime()
-      : new Date(b.joinedDate || b.created_at).getTime() -
-          new Date(a.joinedDate || a.created_at).getTime();
+    const dateA = new Date(a.Joindate || '').getTime();
+    const dateB = new Date(b.Joindate || '').getTime();
+    return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
   const handleSort = () =>
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
 
   const handleView = (userId: string) => {
     setSelectedUser(userId);
     setOpen(true);
   };
 
+  const handlePrevPage = () => {
+    if (hasPrevPage && currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage && currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
   return (
     <div className="w-full p-4 font-[inter]">
       <h2 className="text-xl font-semibold mb-4">User Management</h2>
       <Card className="shadow-sm rounded-xl">
         <CardContent className="p-0 overflow-x-auto">
           <h2 className="pl-5 py-2 font-bold">All Users</h2>
-          if (isLoading) return (
-          <div className="flex items-center space-x-4">
-            <Skeleton className="h-12 w-12 rounded-full" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[250px]" />
-              <Skeleton className="h-4 w-[200px]" />
-            </div>
-          </div>
-          ); if (isError) return <p>Error loading dashboard data.</p>;
+
           {!isLoading && !isError && usersData.length > 0 && (
             <>
               <table className="w-full text-left text-sm min-w-[800px]">
@@ -112,11 +114,12 @@ export default function UserTable() {
                       <td className="py-3 px-4">{user.userName}</td>
                       <td className="py-3 px-4">
                         <Image
-                          src={user?.Photos || "/images/profile.png"}
+                          src={user?.Photos || '/images/profile.png'}
                           alt="profile"
                           width={38}
                           height={38}
                           className="rounded-full object-cover"
+                          unoptimized
                         />
                       </td>
                       <td className="py-3 px-4">{user.Email}</td>
@@ -135,35 +138,31 @@ export default function UserTable() {
                 </tbody>
               </table>
 
-              {/* Pagination - Always show if data exists */}
+              {/* ✅ Pagination */}
               <div className="flex justify-center items-center gap-4 py-4 border-t">
                 <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(1, prev - 1))
-                  }
-                  disabled={currentPage === 1}
-                  className={`px-4 py-2 text-xs md:text-sm  rounded-md border ${
-                    currentPage === 1
-                      ? "opacity-50 cursor-not-allowed bg-gray-100"
-                      : "hover:bg-gray-100 cursor-pointer"
+                  onClick={handlePrevPage}
+                  disabled={!hasPrevPage}
+                  className={`px-4 py-2 text-xs md:text-sm rounded-md border ${
+                    !hasPrevPage
+                      ? 'opacity-50 cursor-not-allowed bg-gray-100'
+                      : 'hover:bg-gray-100 cursor-pointer'
                   }`}
                 >
                   Previous
                 </button>
 
-                <span className="text-xs md:text-sm  text-gray-600">
-                  Page {currentPage} of {totalPages}
+                <span className="text-xs md:text-sm text-gray-600">
+                  Page {pagination.page || currentPage} of {totalPages}
                 </span>
 
                 <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className={`px-4 text-xs md:text-sm py-2 rounded-md border ${
-                    currentPage === totalPages
-                      ? "opacity-50 cursor-not-allowed bg-gray-100"
-                      : "hover:bg-gray-100 cursor-pointer"
+                  onClick={handleNextPage}
+                  disabled={!hasNextPage}
+                  className={`px-4 py-2 text-xs md:text-sm rounded-md border ${
+                    !hasNextPage
+                      ? 'opacity-50 cursor-not-allowed bg-gray-100'
+                      : 'hover:bg-gray-100 cursor-pointer'
                   }`}
                 >
                   Next
@@ -171,6 +170,7 @@ export default function UserTable() {
               </div>
             </>
           )}
+
           {!isLoading && !isError && usersData.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               No users found.
