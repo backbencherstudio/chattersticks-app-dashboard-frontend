@@ -39,7 +39,7 @@ export default function SingleComicPage() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => router.back()}
+            onClick={() => router.push("/comic-management")}
             className="rounded-full cursor-pointer"
           >
             <ArrowLeft className="h-4 w-4" />
