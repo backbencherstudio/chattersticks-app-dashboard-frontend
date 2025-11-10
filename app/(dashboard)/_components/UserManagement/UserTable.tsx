@@ -127,7 +127,7 @@ export default function UserTable() {
                       <td className="py-3 px-4">{user.lastActive}</td>
                       <td className="py-3 px-4 text-center">
                         <button
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-md"
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-md cursor-pointer"
                           onClick={() => handleView(user.id)}
                         >
                           <Eye size={16} />
