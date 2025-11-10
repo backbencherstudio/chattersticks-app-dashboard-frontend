@@ -111,8 +111,17 @@ export default function AddComicModal({ onClose }: ModalProps) {
     }
   };
 
-  const removeEpisode = (id: number) => {
-    setEpisodes((prev) => prev.filter((ep) => ep.id !== id));
+  const removeEpisode = (index?: number) => {
+    setEpisodes((prev) => {
+      const updated = prev.filter((_, i) => i !== index);
+
+      const renumbered = updated.map((ep, i) => ({
+        ...ep,
+        episode_number: i + 1,
+      }));
+
+      return renumbered;
+    });
   };
 
   return (
@@ -227,7 +236,7 @@ export default function AddComicModal({ onClose }: ModalProps) {
                 >
                   <div
                     className="relative cursor-pointer"
-                    onClick={() => removeEpisode(ep.id)}
+                    onClick={() => removeEpisode(index)}
                   >
                     <X className="h-3 w-3 absolute right-0" />
                   </div>
