@@ -62,49 +62,70 @@ export const UserModal: React.FC<UserModalProps> = ({
         {!isLoading && !isError && user && (
           <div className="space-y-3 text-[12px] md:text-sm text-gray-700">
             {/* User ID + Email */}
-            <div className="flex  gap-40 border-b-2 py-2">
-              <div className="flex flex-col gap-1">
-                <span className="font-medium flex items-center gap-2">
-                  <User size={16} /> User ID
-                </span>
-                <span className="font-bold ml-1">{user?.name}</span>
-              </div>
-
-              <div className="flex flex-col gap-1 w-fit">
-                <span className="font-medium flex items-center gap-2">
-                  <Mail size={16} /> Email
-                </span>
-                <span className="font-bold ml-1">{user.email || 'N/A'}</span>
-              </div>
+            <div className="border-b-2 py-2">
+              <table className="w-full table-fixed">
+                <tbody>
+                  <tr className="align-top">
+                    <td className="w-1/2 pr-4">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-medium flex items-center gap-2">
+                          <User size={16} /> User ID
+                        </span>
+                        <span className="font-bold ml-1">{user?.name || 'N/A'}</span>
+                      </div>
+                    </td>
+                    <td className="w-1/2">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-medium flex items-center gap-2">
+                          <Mail size={16} /> Email
+                        </span>
+                        <span className="font-bold ml-1">
+                          {user.email || 'N/A'}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             {/* Favorites + Device */}
-            <div className="flex  gap-26 border-b-2 py-2">
-              <div className="flex flex-col gap-1">
-                <span className="font-medium flex items-center gap-2">
-                  <Heart size={16} /> Favorite Comics
-                </span>
-                <span className="font-bold ml-1">
-                  {user._count?.favorite_comics ?? 0}
-                </span>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <span className="font-medium flex items-center gap-2">
-                  <Smartphone size={16} />
-                  Primary Device
-                </span>
-                <span className="font-bold ml-1">N/A</span>
-              </div>
+            <div className="border-b-2 py-2">
+              <table className="w-full table-fixed">
+                <tbody>
+                  <tr className="align-top">
+                    <td className="w-1/2 pr-4">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-medium flex items-center gap-2">
+                          <Heart size={16} /> Favorite Comics
+                        </span>
+                        <span className="font-bold ml-1">
+                          {user._count?.favorite_comics ?? 0}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="w-1/2">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-medium flex items-center gap-2">
+                          <Smartphone size={16} /> Primary Device
+                        </span>
+                        <span className="font-bold ml-1">N/A</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             {/* Joined + Last Activity */}
-            <div className="flex justify-start py-2">
+            <div className="py-2">
               <div className="flex flex-col gap-1">
                 <span className="font-medium flex items-center gap-2">
                   <Calendar1Icon size={16} /> Joined Date
                 </span>
-                <span className="font-bold ml-1">{formatDate(user.created_at)}</span>
+                <span className="font-bold ml-1">
+                  {formatDate(user.created_at)}
+                </span>
               </div>
             </div>
           </div>

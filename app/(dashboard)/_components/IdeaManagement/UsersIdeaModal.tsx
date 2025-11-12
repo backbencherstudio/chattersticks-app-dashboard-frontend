@@ -80,13 +80,13 @@ export const UsersIdeaModal: React.FC<UserModalProps> = ({
               <span className="font-medium flex items-center gap-2">
                 <User size={18} /> User Name
               </span>
-              <span className="font-bold ml-1">{user.username}</span>
+              <span className="font-bold ml-1">{user?.username || 'N/A'}</span>
             </div>
             <div className="flex flex-col gap-2 w-fit">
               <span className="font-medium flex items-center gap-2">
                 <Mail size={18} /> Email
               </span>
-              <span className="font-bold ml-1">{user.useremail}</span>
+              <span className="font-bold ml-1">{user?.useremail || '!no email found!'}</span>
             </div>
           </div>
 
@@ -96,7 +96,7 @@ export const UsersIdeaModal: React.FC<UserModalProps> = ({
               <span className="font-medium flex items-center justify-start gap-2">
                 <HiOutlineLightBulb size={18} /> Idea Description
               </span>
-              <span>{user.description}</span>
+              <span>{user?.description || '!no idea found!'}</span>
             </div>
           </div>
 
