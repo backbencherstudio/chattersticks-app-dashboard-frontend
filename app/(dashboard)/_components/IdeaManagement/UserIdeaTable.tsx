@@ -67,23 +67,23 @@ export default function UsersIdeaTable() {
             <tbody>
               {users.map((user: User, i: number) => (
                 <tr key={i} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4">{user.username}</td>
+                  <td className="py-3 px-4">{user.username || "N/A"}</td>
                   <td className="py-3 px-4">
                     <Image
-                      src={user.photo || "/default-profile.png"}
+                      src={user.photo || "/images/profile.png"}
                       alt="profile"
                       width={38}
                       height={38}
                       className="rounded-full object-cover"
                     />
                   </td>
-                  <td className="py-3 px-4">{user.useremail}</td>
+                  <td className="py-3 px-4">{user.useremail ||'!no email found!'}</td>
                   <td className="py-3 px-4">
                     <div className="max-w-md">
                       <ReactMarkdown>
                         {user.description?.length > 60
                           ? user.description.substring(0, 60) + "..."
-                          : user.description}
+                          : user.description ||'!no idea found!'}
                       </ReactMarkdown>
                     </div>
                   </td>

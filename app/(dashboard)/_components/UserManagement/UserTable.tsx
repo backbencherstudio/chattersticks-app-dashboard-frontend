@@ -111,7 +111,7 @@ export default function UserTable() {
                 <tbody>
                   {sortedUsers.map((user: User, i: number) => (
                     <tr key={i} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">{user.userName}</td>
+                      <td className="py-3 px-4">{user?.userName ||'N/A'}</td>
                       <td className="py-3 px-4">
                         <Image
                           src={user?.Photos || '/images/profile.png'}
