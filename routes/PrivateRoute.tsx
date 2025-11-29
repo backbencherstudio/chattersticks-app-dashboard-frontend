@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function PrivateRoute({
   children,
@@ -9,14 +9,23 @@ export default function PrivateRoute({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    const token = window.localStorage.getItem("access_token");
 
     if (!token) {
       router.replace("/login");
     }
-  }, [router]);
+  }, [isClient, router]);
 
-  return children;
+  if (!isClient) return null;
+
+  return <>{children}</>;
 }
