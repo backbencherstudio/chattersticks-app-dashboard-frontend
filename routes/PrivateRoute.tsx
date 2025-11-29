@@ -12,7 +12,7 @@ export default function PrivateRoute({
   const token = localStorage.getItem("accessToken");
 
   if (!token) {
-    router.replace("/login");
+    router.push("/login");
   }
 
   return <>{children}</>;
