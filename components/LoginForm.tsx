@@ -122,14 +122,15 @@ export default function LoginForm() {
   const handleLogin = async () => {
     try {
       const res = await login({ email, password }).unwrap();
+      console.log(res);
+
       if (res?.success) {
         const accessToken = res?.authorization?.access_token;
         localStorage.setItem("access_token", accessToken);
-
         router.push("/dashboard");
       }
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   };
 
@@ -138,7 +139,7 @@ export default function LoginForm() {
       await forgotPassword(email).unwrap();
       setCurrentView("otp");
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   };
 

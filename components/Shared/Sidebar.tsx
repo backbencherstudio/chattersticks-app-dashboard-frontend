@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useSettingsModal } from "@/context/SettingsModalContext";
 import { Settings } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FiLogOut } from "react-icons/fi";
@@ -59,12 +59,7 @@ export default function Sidebar({
                   : "opacity-100 max-w-40 ml-2"
               } overflow-hidden whitespace-nowrap`}
             >
-              <Image
-                src="/images/logo.png"
-                alt="logo"
-                width={100}
-                height={100}
-              />
+              <img src="/images/logo.png" alt="logo" width={100} height={100} />
             </span>
           </div>
         </div>

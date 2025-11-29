@@ -19,7 +19,7 @@ const DashboardPage = () => {
       </div>
     );
   if (isError) return <p>Error loading dashboard data.</p>;
-  console.log(data?.activityFeed);
+
   return (
     <div>
       <div className="space-y-6">

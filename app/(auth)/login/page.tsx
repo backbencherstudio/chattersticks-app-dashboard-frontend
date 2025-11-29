@@ -1,16 +1,16 @@
-import React from 'react';
-import Image from 'next/image';
-import LoginForm from '@/components/LoginForm';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+"use client";
 
-const LoginPage = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('access_token')?.value;
+import LoginForm from "@/components/LoginForm";
+import Image from "next/image";
+import { redirect } from "next/navigation";
+
+const LoginPage = () => {
+  const token = localStorage.getItem("access_token");
 
   if (token) {
-    redirect('/dashboard');
+    redirect("/dashboard");
   }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Mobile Layout: flex-col with image on top, form below */}

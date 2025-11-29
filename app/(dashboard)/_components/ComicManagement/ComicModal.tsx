@@ -131,7 +131,7 @@ export default function AddComicModal({ onClose }: ModalProps) {
         <div className="sticky top-0 bg-white border-b px-6 py-6 flex items-center justify-between">
           <h3 className="text-lg font-semibold">Add New Comic</h3>
           <button
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 cursor-pointer"
             onClick={onClose}
           >
             <X size={20} />
@@ -218,7 +218,7 @@ export default function AddComicModal({ onClose }: ModalProps) {
               <h4 className="text-sm font-semibold">Episodes</h4>
               <Button
                 onClick={addEpisode}
-                className="bg-green-600 hover:bg-green-700 text-white h-8 px-4 text-sm"
+                className="bg-green-600 hover:bg-green-700 text-white h-8 px-4 text-sm cursor-pointer"
               >
                 Add Episode
               </Button>
@@ -314,11 +314,15 @@ export default function AddComicModal({ onClose }: ModalProps) {
 
         {/* Footer */}
         <div className="sticky bottom-0 bg-white border-t px-6 py-4 flex justify-end gap-3">
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="cursor-pointer"
+          >
             Cancel
           </Button>
           <Button
-            className="bg-green-600 hover:bg-green-700 text-white"
+            className="bg-green-600 hover:bg-green-700 text-white cursor-pointer"
             onClick={handleSubmit}
             disabled={isSubmitting}
           >

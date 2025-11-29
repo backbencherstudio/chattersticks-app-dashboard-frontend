@@ -1,10 +1,10 @@
-'use client';
+/* eslint-disable @next/next/no-img-element */
+"use client";
 
-import React, { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
-import { HiMenuAlt3 } from 'react-icons/hi';
-import { useGetMeQuery } from '@/rtk/features/all-apis/auth/authApi';
-import gsap from 'gsap';
+import { useGetMeQuery } from "@/rtk/features/all-apis/auth/authApi";
+import gsap from "gsap";
+import React, { useEffect, useRef, useState } from "react";
+import { HiMenuAlt3 } from "react-icons/hi";
 
 export interface NavbarProps {
   isMobileMenuOpen: boolean;
@@ -13,9 +13,9 @@ export interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const { data } = useGetMeQuery('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const { data } = useGetMeQuery("");
   const [image, setImage] = useState<string | null>(null);
 
   const greetingRef = useRef<HTMLDivElement>(null);
@@ -25,9 +25,9 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
 
   useEffect(() => {
     if (data?.data) {
-      setFullName(data.data.name || '');
-      setEmail(data.data.email || '');
-      setImage(data.data.avatar || null);
+      setFullName(data?.data?.name || "");
+      setEmail(data?.data?.email || "");
+      setImage(data?.data?.avatar_url || null);
     }
   }, [data]);
 
@@ -37,7 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
       gsap.fromTo(
         greetingRef.current,
         { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
       );
 
       // Animate name with a slight delay
@@ -49,7 +49,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
           scale: 1,
           duration: 0.5,
           delay: 0.2,
-          ease: 'back.out(1.7)',
+          ease: "back.out(1.7)",
         }
       );
 
@@ -62,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
           x: 0,
           duration: 0.5,
           delay: 0.4,
-          ease: 'power2.out',
+          ease: "power2.out",
         }
       );
 
@@ -76,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
           scale: 1,
           duration: 0.6,
           delay: 0.5,
-          ease: 'elastic.out(1, 0.5)',
+          ease: "elastic.out(1, 0.5)",
         }
       );
 
@@ -86,25 +86,25 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
         duration: 1.5,
         repeat: -1,
         yoyo: true,
-        ease: 'sine.inOut',
+        ease: "sine.inOut",
         delay: 1.1,
       });
     }
   }, [fullName]);
 
   const currentHour = new Date().getHours();
-  let greeting = 'Hello';
-  let greetingIcon = '👋';
+  let greeting = "Hello";
+  let greetingIcon = "👋";
 
   if (currentHour < 12) {
-    greeting = 'Good Morning';
-    greetingIcon = '🌅';
+    greeting = "Good Morning";
+    greetingIcon = "🌅";
   } else if (currentHour < 18) {
-    greeting = 'Good Afternoon';
-    greetingIcon = '☀️';
+    greeting = "Good Afternoon";
+    greetingIcon = "☀️";
   } else {
-    greeting = 'Good Evening';
-    greetingIcon = '🌙';
+    greeting = "Good Evening";
+    greetingIcon = "🌙";
   }
 
   return (
@@ -126,14 +126,13 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
               className="flex items-center gap-2 text-xs md:text-base"
             >
               <h2 className="text-gray-600 font-medium">
-                Hello,{' '}
+                Hello,{" "}
                 <span
                   ref={nameRef}
                   className="not-italic font-bold text-transparent bg-clip-text bg-linear-to-r from-green-600 to-emerald-600"
                 >
                   {fullName}
                 </span>
-                
               </h2>
             </div>
 
@@ -153,13 +152,23 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
 
         {/* Right side - User dropdown */}
         <div className="flex items-center gap-4 text-xs md:text-base">
-          <Image
-            src={image ?? '/images/profile.png'}
-            width={40}
-            height={40}
-            className="rounded-md"
-            alt="profile"
-          />
+          {data?.data?.avatar_url ? (
+            <img
+              src={data?.data?.avatar_url}
+              width={40}
+              height={40}
+              className="rounded-md"
+              alt="profile"
+            />
+          ) : (
+            <img
+              src={"/images/user.png"}
+              width={40}
+              height={40}
+              className="rounded-md"
+              alt="profile"
+            />
+          )}
           <div className="hidden sm:block">
             <h2 className="font-bold text-transparent bg-clip-text bg-linear-to-r from-green-600 to-emerald-600">
               {fullName}
