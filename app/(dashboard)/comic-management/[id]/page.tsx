@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useGetSingleDetailsComicQuery } from "@/rtk/features/all-apis/comics/comicsApi";
 import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
 export default function SingleComicPage() {
@@ -59,9 +59,10 @@ export default function SingleComicPage() {
       {/* Main Comic Info */}
       <Card className="p-6 shadow-sm">
         <div className="flex flex-col md:flex-row gap-6">
-          <img
+          <Image
             src={comic?.thumbnail}
             alt={comic?.title}
+            crossOrigin="anonymous"
             className="w-40 h-40 object-cover rounded-lg border"
             height={400}
             width={400}
@@ -110,7 +111,7 @@ export default function SingleComicPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {comic?.episodes?.map((ep: any) => (
             <Card key={ep.id} className="p-4 hover:shadow-md transition">
-              <img
+              <Image
                 src={ep.thumbnail}
                 alt={ep.title}
                 className="w-full h-full object-cover rounded-md mb-3 "
@@ -125,7 +126,7 @@ export default function SingleComicPage() {
               {/* Images */}
               <div className="grid grid-cols-3 gap-2">
                 {ep?.images?.map((img: string, i: number) => (
-                  <img
+                  <Image
                     key={i}
                     src={img}
                     alt={`Episode ${ep.episode_number} - ${i + 1}`}

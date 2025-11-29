@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useGetMeQuery } from "@/rtk/features/all-apis/auth/authApi";
 import gsap from "gsap";
+import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
 
@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
     if (data?.data) {
       setFullName(data?.data?.name || "");
       setEmail(data?.data?.email || "");
-      setImage(data?.data?.avatar_url || null);
+      setImage(data.data.avatar_url || null);
     }
   }, [data]);
 
@@ -152,20 +152,13 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
 
         {/* Right side - User dropdown */}
         <div className="flex items-center gap-4 text-xs md:text-base">
-          {data?.data?.avatar_url ? (
-            <img
-              src={data?.data?.avatar_url}
-              width={40}
-              height={40}
-              className="rounded-md"
-              alt="profile"
-            />
-          ) : (
-            <img
-              src={"/images/user.png"}
-              width={40}
-              height={40}
-              className="rounded-md"
+          {image && (
+            <Image
+              src={image}
+              width={100}
+              height={100}
+              crossOrigin="anonymous"
+              className="rounded-full h-10 w-10"
               alt="profile"
             />
           )}

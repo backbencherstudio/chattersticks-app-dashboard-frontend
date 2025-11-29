@@ -1,9 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetAllUsersQuery } from "@/rtk/features/all-apis/user-management/userManagement";
-import { Eye } from "lucide-react";
+import { Eye, User2Icon } from "lucide-react";
+import Image from "next/image";
 import React, { useState } from "react";
 import { UserModal } from "./UserModal";
 
@@ -113,21 +113,26 @@ export default function UserTable() {
                     <tr key={i} className="border-b hover:bg-gray-50">
                       <td className="py-3 px-4">{user?.userName || "N/A"}</td>
                       <td className="py-3 px-4">
-                        <img
-                          src={user?.Photos || "/images/profile.png"}
-                          alt="profile"
-                          width={38}
-                          height={38}
-                          className="rounded-full object-cover"
-                        />
+                        {user?.Photos === null ? (
+                          <User2Icon />
+                        ) : (
+                          <Image
+                            src={user?.Photos || "/images/profile.png"}
+                            alt="profile"
+                            width={100}
+                            height={100}
+                            crossOrigin="anonymous"
+                            className="rounded-full object-cover h-10 w-10"
+                          />
+                        )}
                       </td>
-                      <td className="py-3 px-4">{user.Email}</td>
-                      <td className="py-3 px-4">{user.Joindate}</td>
-                      <td className="py-3 px-4">{user.lastActive}</td>
+                      <td className="py-3 px-4">{user?.Email}</td>
+                      <td className="py-3 px-4">{user?.Joindate}</td>
+                      <td className="py-3 px-4">{user?.lastActive}</td>
                       <td className="py-3 px-4 text-center">
                         <button
                           className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-md cursor-pointer"
-                          onClick={() => handleView(user.id)}
+                          onClick={() => handleView(user?.id)}
                         >
                           <Eye size={16} />
                         </button>

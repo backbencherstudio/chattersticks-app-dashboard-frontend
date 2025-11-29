@@ -1,9 +1,19 @@
-import { ReactNode } from "react";
+"use client";
 
-interface PrivateRouteProps {
-  children: ReactNode;
-}
+import { useRouter } from "next/navigation";
 
-export default function PrivateRoute({ children }: PrivateRouteProps) {
+export default function PrivateRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    router.replace("/login");
+  }
+
   return <>{children}</>;
 }

@@ -1,9 +1,7 @@
 "use client";
 import {
   useChangePasswordMutation,
- 
   useGetMeQuery,
- 
   useUpdateProfileMutation,
 } from "@/rtk/features/all-apis/auth/authApi";
 import { User, X } from "lucide-react";
@@ -66,9 +64,10 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
       const response = await updateProfile(formData);
 
-      if (response.data?.success) {
+      if (response?.data?.success) {
         toast.success("Profile updated successfully!");
         refetch();
+        onClose();
       } else {
         toast.error(response?.data?.message || "Failed to update profile.");
       }
@@ -105,7 +104,6 @@ function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       } else {
         toast.error(response?.data?.message || "Failed to update password");
       }
-      
     } catch (error: unknown) {
       console.error(error);
       if (error instanceof Error) {
