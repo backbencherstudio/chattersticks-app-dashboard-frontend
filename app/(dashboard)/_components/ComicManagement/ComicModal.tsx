@@ -100,9 +100,9 @@ export default function AddComicModal({ onClose }: ModalProps) {
 
       if (response?.data?.success) {
         toast.success(response?.data?.message);
+        onClose();
       }
 
-      onClose();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Error submitting comic:");

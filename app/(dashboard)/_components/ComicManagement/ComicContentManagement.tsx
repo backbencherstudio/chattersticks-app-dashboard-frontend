@@ -6,6 +6,7 @@ import Pagination from "@/components/Shared/Pagination";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +17,6 @@ import {
 } from "../../../../rtk/features/all-apis/comics/comicsApi";
 import AddComicModal from "./ComicModal";
 import EditComic from "./EditComic";
-import { Skeleton } from "@/components/ui/skeleton";
 
 type SortOrder = "asc" | "desc" | null;
 
@@ -28,13 +28,10 @@ export default function ComicContentManagement() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedComicId, setSelectedComicId] = useState<string | null>(null);
 
-
-
-  const { data, isLoading, refetch , isError } = useGetAllComicsQuery({
+  const { data, isLoading, refetch, isError } = useGetAllComicsQuery({
     page: currentPage,
     perPage: 10,
   });
-
 
   const [deleteComic] = useDeleteComicMutation();
 
