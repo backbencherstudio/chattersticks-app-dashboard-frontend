@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { parseCookies } from "nookies";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
+  baseUrl: process.env.NEXT_PUBLIC_API_ENDPOINT,
   prepareHeaders: (headers) => {
-    const token = localStorage.getItem("access_token");
+    const cookies = parseCookies();
+    const token = cookies.access_token;
 
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);

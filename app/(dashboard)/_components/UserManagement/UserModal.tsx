@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useGetUserByIdQuery } from "@/rtk/features/all-apis/user-management/userManagement";
-import { Calendar1Icon, Heart, Loader2, Mail, Smartphone, User } from "lucide-react";
+import { Heart, Loader2, Mail, Smartphone, User } from "lucide-react";
 import * as React from "react";
 
 interface UserModalProps {
@@ -39,9 +39,9 @@ export const UserModal: React.FC<UserModalProps> = ({
         <DialogHeader className="flex relative border-b pb-3 mb-4">
           <DialogTitle className="text-md font-bold">
             {isLoading
-              ? 'Loading user...'
+              ? "Loading user..."
               : isError
-              ? 'Error Loading User'
+              ? "Error Loading User"
               : `User Profile: `}
           </DialogTitle>
         </DialogHeader>
@@ -62,70 +62,51 @@ export const UserModal: React.FC<UserModalProps> = ({
         {!isLoading && !isError && user && (
           <div className="space-y-3 text-[12px] md:text-sm text-gray-700">
             {/* User ID + Email */}
-            <div className="border-b-2 py-2">
-              <table className="w-full table-fixed">
-                <tbody>
-                  <tr className="align-top">
-                    <td className="w-1/2 pr-4">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-medium flex items-center gap-2">
-                          <User size={16} /> User ID
-                        </span>
-                        <span className="font-bold ml-1">{user?.name || 'N/A'}</span>
-                      </div>
-                    </td>
-                    <td className="w-1/2">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-medium flex items-center gap-2">
-                          <Mail size={16} /> Email
-                        </span>
-                        <span className="font-bold ml-1">
-                          {user.email || 'N/A'}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="flex justify-between border-b-2 py-2">
+              <div className="flex flex-col gap-1">
+                <span className="font-medium flex items-center gap-2">
+                  <User size={16} /> User ID
+                </span>
+                <span className="font-bold ml-1">{user?.name}</span>
+              </div>
+
+              <div className="flex flex-col gap-1 w-fit">
+                <span className="font-medium flex items-center gap-2">
+                  <Mail size={16} /> Email
+                </span>
+                <span className="font-bold ml-1">{user.email || "N/A"}</span>
+              </div>
             </div>
 
             {/* Favorites + Device */}
-            <div className="border-b-2 py-2">
-              <table className="w-full table-fixed">
-                <tbody>
-                  <tr className="align-top">
-                    <td className="w-1/2 pr-4">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-medium flex items-center gap-2">
-                          <Heart size={16} /> Favorite Comics
-                        </span>
-                        <span className="font-bold ml-1">
-                          {user._count?.favorite_comics ?? 0}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="w-1/2">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-medium flex items-center gap-2">
-                          <Smartphone size={16} /> Primary Device
-                        </span>
-                        <span className="font-bold ml-1">N/A</span>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="flex justify-between mr-2 md:mr-5 border-b-2 py-2">
+              <div className="flex flex-col gap-1">
+                <span className="font-medium flex items-center gap-2">
+                  <Heart size={16} /> Favorite Comics
+                </span>
+                <span className="font-bold ml-1">
+                  {user._count?.favorite_comics ?? 0}
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <span className="font-medium flex items-center gap-2">
+                  <Smartphone size={16} /> Primary Device
+                </span>
+                <span className="font-bold">N/A</span>
+              </div>
             </div>
 
             {/* Joined + Last Activity */}
-            <div className="py-2">
+            <div className="flex justify-between py-2">
               <div className="flex flex-col gap-1">
-                <span className="font-medium flex items-center gap-2">
-                  <Calendar1Icon size={16} /> Joined Date
-                </span>
-                <span className="font-bold ml-1">
-                  {formatDate(user.created_at)}
-                </span>
+                <span className="font-medium">Joined Date</span>
+                <span className="font-bold">{formatDate(user.created_at)}</span>
+              </div>
+
+              <div className="flex flex-col gap-1 mr-6">
+                <span className="font-medium">Last Activity</span>
+                <span className="font-bold">{formatDate(user.updated_at)}</span>
               </div>
             </div>
           </div>

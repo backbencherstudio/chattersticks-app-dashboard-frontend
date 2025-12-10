@@ -1,31 +1,21 @@
-"use client";
+'use client';
+import { useRouter } from 'next/navigation';
+import { parseCookies } from 'nookies';
+import { ReactNode, useEffect } from 'react';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+interface PrivateRouteProps {
+  children: ReactNode;
+}
 
-export default function PrivateRoute({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function PrivateRoute({ children }: PrivateRouteProps) {
   const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    const token = window.localStorage.getItem("access_token");
-
-    if (!token) {
-      router.replace("/login");
+    const cookies = parseCookies();
+    if (!cookies.token) {
+      router.push('/login');
     }
-  }, [isClient, router]);
-
-  if (!isClient) return null;
+  }, [router]);
 
   return <>{children}</>;
 }

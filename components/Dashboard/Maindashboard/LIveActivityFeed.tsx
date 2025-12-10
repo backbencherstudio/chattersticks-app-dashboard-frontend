@@ -68,7 +68,7 @@ export default function LiveActivityFeed({
               key={item.id}
               className={`${style} border-none shadow-none transition hover:shadow-sm`}
             >
-              <CardContent className="flex flex-col md:flex-row md:items-center md:gap-2  px-4 py-1">
+              <CardContent className="flex flex-col md:flex-row md:items-center md:gap-2 p-3">
                 <span className="capitalize font-semibold flex items-center gap-2">
                   {icon}
                   {item.type === "USER_REGISTRATION"

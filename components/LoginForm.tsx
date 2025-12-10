@@ -17,7 +17,7 @@ import {
 } from "@/rtk/features/all-apis/auth/authApi";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { parseCookies } from "nookies";
+import { parseCookies, setCookie } from "nookies";
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 
@@ -122,15 +122,27 @@ export default function LoginForm() {
   const handleLogin = async () => {
     try {
       const res = await login({ email, password }).unwrap();
-      console.log(res);
-
       if (res?.success) {
         const accessToken = res?.authorization?.access_token;
-        localStorage.setItem("access_token", accessToken);
+        const refreshToken = res?.authorization?.refresh_token;
+
+        setCookie(null, "access_token", accessToken, {
+          maxAge: 60 * 60 * 24,
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
+        setCookie(null, "refresh_token", refreshToken, {
+          maxAge: 60 * 60 * 24 * 7,
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
+
         router.push("/dashboard");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -139,7 +151,7 @@ export default function LoginForm() {
       await forgotPassword(email).unwrap();
       setCurrentView("otp");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

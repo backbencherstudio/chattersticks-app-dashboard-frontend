@@ -1,12 +1,12 @@
-"use client";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useGetAllIdeasQuery } from "@/rtk/features/all-apis/idea-management/ideaManagement";
-import { Eye } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { UsersIdeaModal } from "./UsersIdeaModal";
+'use client';
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import Image from 'next/image';
+import { Eye } from 'lucide-react';
+import { UsersIdeaModal } from './UsersIdeaModal';
+import ReactMarkdown from 'react-markdown';
+import { useGetAllIdeasQuery } from '@/rtk/features/all-apis/idea-management/ideaManagement';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface User {
   username: string;
@@ -28,22 +28,23 @@ export default function UsersIdeaTable() {
   const users: User[] = Array.isArray(usersResponse)
     ? usersResponse
     : usersResponse?.data ?? [];
+  
 
   function handleView(user: User) {
     setSelectedUser(user);
     setOpen(true);
   }
 
-  if (isLoading)
-    return (
-      <div className="flex items-center space-x-4">
-        <Skeleton className="h-12 w-12 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[250px]" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-    );
+   if (isLoading)
+     return (
+       <div className="flex items-center space-x-4">
+         <Skeleton className="h-12 w-12 rounded-full" />
+         <div className="space-y-2">
+           <Skeleton className="h-4 w-[250px]" />
+           <Skeleton className="h-4 w-[200px]" />
+         </div>
+       </div>
+     );
   if (isError) return <p>Error fetching users.</p>;
   if (!Array.isArray(users)) return <p>No users found.</p>;
 
@@ -66,25 +67,23 @@ export default function UsersIdeaTable() {
             <tbody>
               {users.map((user: User, i: number) => (
                 <tr key={i} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4">{user?.username || "N/A"}</td>
+                  <td className="py-3 px-4">{user.username}</td>
                   <td className="py-3 px-4">
                     <Image
-                      src={user?.photo || "/images/profile.png"}
+                      src={user.photo || "/default-profile.png"}
                       alt="profile"
                       width={38}
                       height={38}
                       className="rounded-full object-cover"
                     />
                   </td>
-                  <td className="py-3 px-4">
-                    {user?.useremail || "!no email found!"}
-                  </td>
+                  <td className="py-3 px-4">{user.useremail}</td>
                   <td className="py-3 px-4">
                     <div className="max-w-md">
                       <ReactMarkdown>
-                        {user?.description?.length > 60
-                          ? user?.description.substring(0, 60) + "..."
-                          : user?.description || "!no idea found!"}
+                        {user.description?.length > 60
+                          ? user.description.substring(0, 60) + "..."
+                          : user.description}
                       </ReactMarkdown>
                     </div>
                   </td>

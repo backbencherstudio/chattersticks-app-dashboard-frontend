@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useGetSingleDetailsComicQuery } from "@/rtk/features/all-apis/comics/comicsApi";
+import { useGetSingleComicQuery } from "@/rtk/features/all-apis/comics/comicsApi";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ export default function SingleComicPage() {
   const router = useRouter();
   const { id } = useParams();
 
-  const { data, isLoading, refetch } = useGetSingleDetailsComicQuery(id);
+  const { data, isLoading, refetch } = useGetSingleComicQuery(id);
   const comic = data?.data;
 
   if (isLoading) {
@@ -60,42 +60,41 @@ export default function SingleComicPage() {
       <Card className="p-6 shadow-sm">
         <div className="flex flex-col md:flex-row gap-6">
           <Image
-            src={comic?.thumbnail}
-            alt={comic?.title}
-            crossOrigin="anonymous"
+            src={comic?.thumbnail_url}
+            alt={comic.title}
             className="w-40 h-40 object-cover rounded-lg border"
             height={400}
             width={400}
           />
 
           <div className="space-y-2">
-            <h3 className="text-xl font-bold">{comic?.title}</h3>
+            <h3 className="text-xl font-bold">{comic.title}</h3>
             <p className="text-sm text-gray-600">
-              <span className="font-medium">Author:</span> {comic?.author}
+              <span className="font-medium">Author:</span> {comic.author}
             </p>
             <p className="text-sm text-gray-600">
               <span className="font-medium">Status:</span>{" "}
               <span
                 className={`px-2 py-1 rounded-md text-xs font-semibold ${
-                  comic?.status === "PUBLISHED"
+                  comic.status === "PUBLISHED"
                     ? "bg-green-100 text-green-700"
                     : comic.status === "DRAFT"
                     ? "bg-yellow-100 text-yellow-700"
                     : "bg-red-100 text-red-700"
                 }`}
               >
-                {comic?.status}
+                {comic.status}
               </span>
             </p>
             <p className="text-sm text-gray-600">
               <span className="font-medium">Description:</span>{" "}
-              {comic?.description}
+              {comic.description}
             </p>
 
             <div className="flex gap-6 mt-3 text-sm text-gray-600">
               <p>
                 <span className="font-medium">Downloads:</span>{" "}
-                {comic?.download_count}
+                {comic.download_count}
               </p>
               <p>
                 <span className="font-medium">Views:</span> {comic.view_count}
@@ -109,12 +108,12 @@ export default function SingleComicPage() {
       <div>
         <h3 className="text-lg font-semibold mb-4">Episodes</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {comic?.episodes?.map((ep: any) => (
+          {comic.episodes?.map((ep: any) => (
             <Card key={ep.id} className="p-4 hover:shadow-md transition">
               <Image
-                src={ep.thumbnail}
+                src={ep.thumbnail_url}
                 alt={ep.title}
-                className="w-full h-full object-cover rounded-md mb-3 "
+                className="w-full h-40 object-cover rounded-md mb-3 border"
                 height={400}
                 width={400}
               />
@@ -125,12 +124,12 @@ export default function SingleComicPage() {
 
               {/* Images */}
               <div className="grid grid-cols-3 gap-2">
-                {ep?.images?.map((img: string, i: number) => (
+                {ep.images_urls?.map((img: string, i: number) => (
                   <Image
                     key={i}
                     src={img}
                     alt={`Episode ${ep.episode_number} - ${i + 1}`}
-                    className="w-full h-full object-cover rounded"
+                    className="w-full h-16 object-cover rounded"
                     height={400}
                     width={400}
                   />
