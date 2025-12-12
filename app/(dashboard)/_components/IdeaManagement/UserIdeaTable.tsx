@@ -11,7 +11,7 @@ import { UsersIdeaModal } from "./UsersIdeaModal";
 interface User {
   username: string;
   id: string;
-  photo: string;
+  userphoto: string;
   useremail: string;
   description: string;
   approval_status?: string;
@@ -69,7 +69,7 @@ export default function UsersIdeaTable() {
                   <td className="py-3 px-4">{user.username}</td>
                   <td className="py-3 px-4">
                     <Image
-                      src={user.photo || "/default-profile.png"}
+                      src={user?.userphoto || "/default-profile.png"}
                       alt="profile"
                       width={38}
                       height={38}

@@ -21,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
     if (data?.data) {
       setFullName(data.data.name || "");
       setEmail(data.data.email || "");
-      setImage(data.data.avatar || null);
+      setImage(data?.data?.avatar_url || null);
     }
   }, [data]);
 
@@ -60,7 +60,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
         {/* Right side - User dropdown */}
         <div className="flex items-center gap-4 text-xs md:text-lg">
           <Image
-            src={image ?? "/images/profile.png"}
+            src={image ? data?.data?.avatar_url : "/images/profile.png"}
             width={40}
             height={40}
             className="rounded-md"
