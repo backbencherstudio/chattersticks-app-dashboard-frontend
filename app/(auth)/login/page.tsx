@@ -1,14 +1,24 @@
 "use client";
 import LoginForm from "@/components/LoginForm";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const LoginPage = () => {
-  const token = localStorage.getItem("access_token");
+  const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-  if (token) {
-    redirect("/dashboard");
-  }
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      router.replace("/dashboard");
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [router]);
+
+  if (isCheckingAuth) return null;
   return (
     <div className="min-h-screen bg-white">
       {/* Mobile Layout: flex-col with image on top, form below */}
