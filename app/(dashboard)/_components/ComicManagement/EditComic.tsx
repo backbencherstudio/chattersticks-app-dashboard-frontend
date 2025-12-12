@@ -268,6 +268,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                       className="w-32 h-32 object-cover rounded-md border"
                       height={400}
                       width={400}
+                      crossOrigin="anonymous"
                     />
 
                     <button
@@ -367,6 +368,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                               className="w-20 h-20 object-cover rounded-md border"
                               height={400}
                               width={400}
+                              crossOrigin="anonymous"
                             />
                             <button
                               type="button"
@@ -477,6 +479,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                                   className="w-24 h-24 object-cover rounded-md border"
                                   height={400}
                                   width={400}
+                                  crossOrigin="anonymous"
                                 />
                                 <button
                                   type="button"
@@ -531,6 +534,7 @@ export default function EditComic({ onClose, comicId }: ModalProps) {
                                 className="w-24 h-24 object-cover rounded-md border"
                                 height={400}
                                 width={400}
+                                crossOrigin="anonymous"
                               />
                               <button
                                 type="button"

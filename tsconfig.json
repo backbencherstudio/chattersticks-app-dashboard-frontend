@@ -10,14 +10,12 @@
     "skipLibCheck": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "strict": true,
-    "skipLibCheck": true,
     "noEmit": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
     "paths": {
@@ -29,8 +27,7 @@
       {
         "name": "next"
       }
-    ],
-    "allowJs": true
+    ]
   },
   "include": [
     "next-env.d.ts",

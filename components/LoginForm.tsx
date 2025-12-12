@@ -17,8 +17,9 @@ import {
 } from "@/rtk/features/all-apis/auth/authApi";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { parseCookies, setCookie } from "nookies";
+import { parseCookies } from "nookies";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Input } from "./ui/input";
 
 // Types
@@ -124,20 +125,7 @@ export default function LoginForm() {
       const res = await login({ email, password }).unwrap();
       if (res?.success) {
         const accessToken = res?.authorization?.access_token;
-        const refreshToken = res?.authorization?.refresh_token;
-
-        setCookie(null, "access_token", accessToken, {
-          maxAge: 60 * 60 * 24,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-        });
-        setCookie(null, "refresh_token", refreshToken, {
-          maxAge: 60 * 60 * 24 * 7,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-        });
+        localStorage.setItem("access_token", accessToken);
 
         router.push("/dashboard");
       }
@@ -167,7 +155,7 @@ export default function LoginForm() {
 
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.warning("Passwords do not match");
       return;
     }
     try {

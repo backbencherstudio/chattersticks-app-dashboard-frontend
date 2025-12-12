@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { gsap } from 'gsap';
+import { gsap } from "gsap";
+import Image from "next/image";
+import { useEffect, useRef } from "react";
 
 export default function Loading() {
   const logoRef = useRef<HTMLImageElement>(null);
@@ -12,7 +12,7 @@ export default function Loading() {
   useEffect(() => {
     const tl = gsap.timeline({
       repeat: -1,
-      defaults: { ease: 'power1.inOut' },
+      defaults: { ease: "power1.inOut" },
     });
 
     // Logo fade-in and gentle float animation
@@ -31,10 +31,10 @@ export default function Loading() {
         duration: 1.5,
         yoyo: true,
         repeat: 1,
-        transformOrigin: 'center center',
-        ease: 'power2.inOut',
+        transformOrigin: "center center",
+        ease: "power2.inOut",
       },
-      '<0.2'
+      "<0.2"
     );
 
     // Text fade pulse animation
@@ -43,10 +43,12 @@ export default function Loading() {
       repeat: -1,
       yoyo: true,
       duration: 1.2,
-      ease: 'power1.inOut',
+      ease: "power1.inOut",
     });
 
-    return () => { tl.kill(); }; 
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   return (
@@ -59,6 +61,7 @@ export default function Loading() {
         height={120}
         alt="App logo"
         className="mb-8 select-none"
+        crossOrigin="anonymous"
       />
 
       {/* Animated blue cube */}
