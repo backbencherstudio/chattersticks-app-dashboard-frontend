@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
-  DialogTitle,
   DialogOverlay,
-  DialogClose,
-} from '@/components/ui/dialog';
-import { Mail, User } from 'lucide-react';
-import { HiOutlineLightBulb } from 'react-icons/hi';
-import { Button } from '@/components/ui/button';
-import { useApproveIdeaMutation } from '@/rtk/features/all-apis/idea-management/ideaManagement';
-import { toast } from 'sonner';
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useApproveIdeaMutation } from "@/rtk/features/all-apis/idea-management/ideaManagement";
+import { Mail, User } from "lucide-react";
+import * as React from "react";
+import { HiOutlineLightBulb } from "react-icons/hi";
+import { toast } from "sonner";
 
 interface UserModalProps {
   open: boolean;
@@ -23,7 +23,7 @@ interface UserModalProps {
     id: string;
     useremail: string;
     description: string;
-    photo: string;
+    userphoto: string;
     approval_status?: string;
   } | null;
 }
@@ -35,31 +35,38 @@ export const UsersIdeaModal: React.FC<UserModalProps> = ({
 }) => {
   const [approveIdea, { isLoading }] = useApproveIdeaMutation();
 
-
   if (!user) return null;
 
-  const isApproved = user?.approval_status === 'APPROVED' || user?.approval_status === 'REJECTED';
+  const isApproved =
+    user?.approval_status === "APPROVED" ||
+    user?.approval_status === "REJECTED";
 
   const handleApprove = async () => {
-    if (user.approval_status === 'APPROVED') {
-      toast.info('This idea is already approved.');
+    if (user.approval_status === "APPROVED") {
+      toast.info("This idea is already approved.");
       return;
     }
     const id = user?.id;
     const payload = {
-      status: 'APPROVED',
+      status: "APPROVED",
     };
     try {
       await approveIdea({ id, data: payload }).unwrap();
       // setIsApproved(true);
       toast.success(`Idea approved for ${user.username}`);
     } catch (err: unknown) {
-      console.error('Approval error:', err);
-      const errorMessage = err instanceof Error
-        ? err.message
-        : typeof err === 'object' && err !== null && 'data' in err && typeof err.data === 'object' && err.data !== null && 'message' in err.data
-        ? (err.data as { message: string }).message
-        : 'Failed to approve idea';
+      console.error("Approval error:", err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" &&
+            err !== null &&
+            "data" in err &&
+            typeof err.data === "object" &&
+            err.data !== null &&
+            "message" in err.data
+          ? (err.data as { message: string }).message
+          : "Failed to approve idea";
       toast.error(errorMessage);
     }
   };
@@ -105,16 +112,16 @@ export const UsersIdeaModal: React.FC<UserModalProps> = ({
             <span className="font-medium">Status:</span>
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                user.approval_status === 'APPROVED'
-                  ? 'bg-green-100 text-green-700'
-                  : user.approval_status === 'PENDING'
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-red-100 text-red-700'
+                user.approval_status === "APPROVED"
+                  ? "bg-green-100 text-green-700"
+                  : user.approval_status === "PENDING"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-red-100 text-red-700"
               }`}
             >
-              {user.approval_status === 'APPROVED' && '✓ APPROVED'}
-              {user.approval_status === 'PENDING' && 'PENDING'}
-              {user.approval_status === 'REJECTED' && 'REJECTED'}
+              {user.approval_status === "APPROVED" && "✓ APPROVED"}
+              {user.approval_status === "PENDING" && "PENDING"}
+              {user.approval_status === "REJECTED" && "REJECTED"}
             </span>
           </div>
 
@@ -126,16 +133,16 @@ export const UsersIdeaModal: React.FC<UserModalProps> = ({
                 disabled={isApproved || isLoading}
                 className={`${
                   isApproved || isLoading
-                    ? 'bg-gray-400 cursor-not-allowed text-white'
-                    : 'bg-green-500 hover:bg-green-400 text-white'
+                    ? "bg-gray-400 cursor-not-allowed text-white"
+                    : "bg-green-500 hover:bg-green-400 text-white"
                 }`}
                 variant="outline"
               >
                 {isLoading
-                  ? 'Approving...'
+                  ? "Approving..."
                   : isApproved
-                  ? '✓ Approved'
-                  : 'Approve Idea'}
+                  ? "✓ Approved"
+                  : "Approve Idea"}
               </Button>
             </div>
           )}
