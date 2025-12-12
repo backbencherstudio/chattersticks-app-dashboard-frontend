@@ -26,7 +26,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "lloyd-texts-mix-lined.trycloudflare.com",
+        hostname: "explain-rod-corps-chapel.trycloudflare.com",
         pathname: "/**",
       },
     ],

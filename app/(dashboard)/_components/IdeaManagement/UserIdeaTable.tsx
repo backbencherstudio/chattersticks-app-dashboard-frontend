@@ -49,7 +49,7 @@ export default function UsersIdeaTable() {
 
   return (
     <div className="w-full p-4 font-[inter]">
-      <h2 className="text-xl font-semibold mb-4">User Management</h2>
+      <h2 className="text-xl font-semibold mb-4">Idea Management</h2>
       <Card className="shadow-sm rounded-xl">
         <CardContent className="p-0 overflow-x-auto">
           <h2 className="pl-5 py-2 font-bold">All Users</h2>
@@ -73,7 +73,7 @@ export default function UsersIdeaTable() {
                       alt="profile"
                       width={38}
                       height={38}
-                      className="rounded-full object-cover"
+                      className="rounded-full object-cover h-10 w-10"
                       crossOrigin="anonymous"
                     />
                   </td>
