@@ -61,10 +61,11 @@ export default function SingleComicPage() {
         <div className="flex flex-col md:flex-row gap-6">
           <Image
             src={comic?.thumbnail_url}
-            alt={comic.title}
+            alt={comic?.title}
             className="w-40 h-40 object-cover rounded-lg border"
             height={400}
             width={400}
+            crossOrigin="anonymous"
           />
 
           <div className="space-y-2">
@@ -116,6 +117,7 @@ export default function SingleComicPage() {
                 className="w-full h-40 object-cover rounded-md mb-3 border"
                 height={400}
                 width={400}
+                crossOrigin="anonymous"
               />
               <h4 className="font-semibold text-gray-800">{ep.title}</h4>
               <p className="text-sm text-gray-500 mb-2">
@@ -132,6 +134,7 @@ export default function SingleComicPage() {
                     className="w-full h-16 object-cover rounded"
                     height={400}
                     width={400}
+                    crossOrigin="anonymous"
                   />
                 ))}
               </div>

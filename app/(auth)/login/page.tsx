@@ -1,15 +1,13 @@
-import React from 'react';
-import Image from 'next/image';
-import LoginForm from '@/components/LoginForm';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+"use client";
+import LoginForm from "@/components/LoginForm";
+import Image from "next/image";
+import { redirect } from "next/navigation";
 
-const LoginPage = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('access_token')?.value;
+const LoginPage = () => {
+  const token = localStorage.getItem("access_token");
 
   if (token) {
-    redirect('/dashboard');
+    redirect("/dashboard");
   }
   return (
     <div className="min-h-screen bg-white">
@@ -24,6 +22,7 @@ const LoginPage = async () => {
             height={1000}
             className="object-contain w-2/3 h-fit"
             priority
+            crossOrigin="anonymous"
           />
         </div>
 
@@ -42,6 +41,7 @@ const LoginPage = async () => {
             width={1000}
             height={1000}
             className="md:w-[543px] md:h-[304px]"
+            crossOrigin="anonymous"
           />
         </div>
         <div className="bg-soft-gradient flex items-center justify-center w-full min-h-screen">

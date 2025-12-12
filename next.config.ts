@@ -13,6 +13,22 @@ const nextConfig = {
         port: "8080",
         pathname: "/public/storage/**",
       },
+      {
+        protocol: "http",
+        hostname: "lloyd-texts-mix-lined.trycloudflare.com",
+        pathname: "/public/storage/**",
+      },
+      {
+        protocol: "http",
+        hostname: "31.97.214.154",
+        port: "4000",
+        pathname: "/public/storage/**",
+      },
+      {
+        protocol: "https",
+        hostname: "lloyd-texts-mix-lined.trycloudflare.com",
+        pathname: "/**",
+      },
     ],
   },
 };

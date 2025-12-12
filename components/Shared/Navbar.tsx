@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { HiMenuAlt3 } from 'react-icons/hi';
-import { useGetMeQuery } from '@/rtk/features/all-apis/auth/authApi';
-
+import { useGetMeQuery } from "@/rtk/features/all-apis/auth/authApi";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { HiMenuAlt3 } from "react-icons/hi";
 
 export interface NavbarProps {
   isMobileMenuOpen: boolean;
@@ -12,32 +11,28 @@ export interface NavbarProps {
   notificationCount: number;
 }
 
-
-
 const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const { data } = useGetMeQuery("");
-    const [image, setImage] = useState<string | null>(null);
-
-  
+  const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (data?.data) {
-      setFullName(data.data.name || '');
-      setEmail(data.data.email || '');
+      setFullName(data.data.name || "");
+      setEmail(data.data.email || "");
       setImage(data.data.avatar || null);
     }
   }, [data]);
 
   const currentHour = new Date().getHours();
-  let greeting = 'Hello';
+  let greeting = "Hello";
   if (currentHour < 12) {
     greeting = "Good Morning!";
   } else if (currentHour < 18) {
-    greeting ="Good Afternoon!"
+    greeting = "Good Afternoon!";
   } else {
-   greeting="Good Evening!!"
+    greeting = "Good Evening!!";
   }
   return (
     <header className="bg-white z-10 border-b border-gray-200 font-[inter]">
@@ -54,22 +49,23 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
           {/* greetings */}
           <div className="relative flex-1 text-xs md:text-lg">
             <h2 className="text-gray-500">
-              Hello{' '}
+              Hello{" "}
               <span className="not-italic font-bold text-green-700">
                 {fullName}
               </span>
             </h2>
-            <p className='text-yellow-600'>{greeting}</p>
+            <p className="text-yellow-600">{greeting}</p>
           </div>
         </div>
         {/* Right side - User dropdown */}
         <div className="flex items-center gap-4 text-xs md:text-lg">
           <Image
-            src={image ?? '/images/profile.png'}
+            src={image ?? "/images/profile.png"}
             width={40}
             height={40}
             className="rounded-md"
             alt="profile"
+            crossOrigin="anonymous"
           />
           <div>
             <h2 className="font-bold">{fullName}</h2>
