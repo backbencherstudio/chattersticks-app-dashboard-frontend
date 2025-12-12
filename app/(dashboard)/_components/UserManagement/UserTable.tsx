@@ -118,7 +118,7 @@ export default function UserTable() {
                           alt="profile"
                           width={38}
                           height={38}
-                          className="rounded-full object-cover"
+                          className="rounded-full object-cover h-10 w-10"
                           crossOrigin="anonymous"
                         />
                       </td>

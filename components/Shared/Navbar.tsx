@@ -63,7 +63,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
             src={image ? data?.data?.avatar_url : "/images/profile.png"}
             width={40}
             height={40}
-            className="rounded-md"
+            className="rounded-full h-10 w-10"
             alt="profile"
             crossOrigin="anonymous"
           />
