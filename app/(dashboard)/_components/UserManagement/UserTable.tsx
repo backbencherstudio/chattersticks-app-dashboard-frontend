@@ -1,11 +1,11 @@
-'use client';
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import Image from 'next/image';
-import { Eye } from 'lucide-react';
-import { UserModal } from './UserModal';
-import { useGetAllUsersQuery } from '@/rtk/features/all-apis/user-management/userManagement';
-import { Skeleton } from '@/components/ui/skeleton';
+"use client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetAllUsersQuery } from "@/rtk/features/all-apis/user-management/userManagement";
+import { Eye } from "lucide-react";
+import Image from "next/image";
+import React, { useState } from "react";
+import { UserModal } from "./UserModal";
 
 type SortOrder = "asc" | "desc" | null;
 
@@ -58,13 +58,13 @@ export default function UserTable() {
   // ✅ Sort users client-side by Join Date
   const sortedUsers = [...usersData].sort((a, b) => {
     if (!sortOrder) return 0;
-    const dateA = new Date(a.Joindate || '').getTime();
-    const dateB = new Date(b.Joindate || '').getTime();
-    return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    const dateA = new Date(a.Joindate || "").getTime();
+    const dateB = new Date(b.Joindate || "").getTime();
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
   });
 
   const handleSort = () =>
-    setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
 
   const handleView = (userId: string) => {
     setSelectedUser(userId);
@@ -73,13 +73,13 @@ export default function UserTable() {
 
   const handlePrevPage = () => {
     if (hasPrevPage && currentPage > 1) {
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
   const handleNextPage = () => {
     if (hasNextPage && currentPage < totalPages) {
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   };
   return (
@@ -114,17 +114,17 @@ export default function UserTable() {
                       <td className="py-3 px-4">{user.userName}</td>
                       <td className="py-3 px-4">
                         <Image
-                          src={user?.Photos || '/images/profile.png'}
+                          src={user?.Photos || "/images/profile.png"}
                           alt="profile"
                           width={38}
                           height={38}
                           className="rounded-full object-cover"
-                          unoptimized
+                          crossOrigin="anonymous"
                         />
                       </td>
-                      <td className="py-3 px-4">{user.Email}</td>
-                      <td className="py-3 px-4">{user.Joindate}</td>
-                      <td className="py-3 px-4">{user.lastActive}</td>
+                      <td className="py-3 px-4">{user?.Email}</td>
+                      <td className="py-3 px-4">{user?.Joindate}</td>
+                      <td className="py-3 px-4">{user?.lastActive}</td>
                       <td className="py-3 px-4 text-center">
                         <button
                           className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-md cursor-pointer"
@@ -145,8 +145,8 @@ export default function UserTable() {
                   disabled={!hasPrevPage}
                   className={`px-4 py-2 text-xs md:text-sm rounded-md border ${
                     !hasPrevPage
-                      ? 'opacity-50 cursor-not-allowed bg-gray-100'
-                      : 'hover:bg-gray-100 cursor-pointer'
+                      ? "opacity-50 cursor-not-allowed bg-gray-100"
+                      : "hover:bg-gray-100 cursor-pointer"
                   }`}
                 >
                   Previous
@@ -161,8 +161,8 @@ export default function UserTable() {
                   disabled={!hasNextPage}
                   className={`px-4 py-2 text-xs md:text-sm rounded-md border ${
                     !hasNextPage
-                      ? 'opacity-50 cursor-not-allowed bg-gray-100'
-                      : 'hover:bg-gray-100 cursor-pointer'
+                      ? "opacity-50 cursor-not-allowed bg-gray-100"
+                      : "hover:bg-gray-100 cursor-pointer"
                   }`}
                 >
                   Next
